@@ -1,0 +1,391 @@
+/* src/admin/LoginRegister.css */
+.auth-page {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+  padding: 20px;
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 500px;
+}
+
+.auth-box {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 40px 35px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.auth-box:hover {
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.auth-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #000000;
+  margin-bottom: 8px;
+  font-style: normal;
+}
+
+.auth-subtitle {
+  font-size: 15px;
+  color: #666;
+  font-style: normal;
+  font-weight: 400;
+}
+
+/* Alert Messages */
+.alert {
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  animation: slideDown 0.3s ease;
+}
+
+.alert-error {
+  background: #fde8e8;
+  color: #c0392b;
+  border: 1px solid #f5c6cb;
+}
+
+.alert-success {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #000000;
+  font-style: normal;
+}
+
+.form-input {
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #000000;
+  background: #fafafa;
+  transition: all 0.3s ease;
+  outline: none;
+  font-style: normal;
+}
+
+.form-input:focus {
+  border-color: #2d7a3a;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(45, 122, 58, 0.1);
+}
+
+.form-input::placeholder {
+  color: #999;
+}
+
+.form-hint {
+  font-size: 12px;
+  color: #888;
+  margin-top: 4px;
+  font-style: normal;
+}
+
+/* Form Section */
+.form-section {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+}
+
+.form-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #000000;
+  margin: 0 0 15px 0;
+  font-style: normal;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+/* Form Options */
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px 0;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #000000;
+  cursor: pointer;
+  font-style: normal;
+}
+
+.remember-me input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #2d7a3a;
+  cursor: pointer;
+}
+
+.forgot-link {
+  font-size: 14px;
+  color: #2d7a3a;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  font-style: normal;
+}
+
+.forgot-link:hover {
+  color: #1a472a;
+  text-decoration: underline;
+}
+
+/* Submit Button */
+.auth-btn {
+  padding: 14px;
+  background: #2d7a3a;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-style: normal;
+  margin-top: 5px;
+}
+
+.auth-btn:hover:not(:disabled) {
+  background: #1a472a;
+  transform: scale(1.02);
+  box-shadow: 0 5px 20px rgba(45, 122, 58, 0.3);
+}
+
+.auth-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.auth-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Footer */
+.auth-footer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.auth-switch-text {
+  font-size: 14px;
+  color: #000000;
+  font-style: normal;
+}
+
+.auth-switch-link {
+  color: #2d7a3a;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-style: normal;
+}
+
+.auth-switch-link:hover {
+  color: #1a472a;
+  text-decoration: underline;
+}
+
+/* Divider */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 25px 0;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: #e0e0e0;
+}
+
+.divider-text {
+  font-size: 13px;
+  color: #999;
+  font-weight: 500;
+  font-style: normal;
+}
+
+/* Social Login */
+.social-login {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  background: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  color: #000000;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-style: normal;
+}
+
+.social-btn:hover {
+  border-color: #2d7a3a;
+  background: #f5f5f5;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.social-btn.google:hover {
+  border-color: #4285F4;
+}
+
+.social-btn.facebook:hover {
+  border-color: #1877F2;
+}
+
+.social-btn svg {
+  flex-shrink: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .auth-box {
+    padding: 30px 20px;
+  }
+
+  .auth-title {
+    font-size: 28px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .form-section {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-box {
+    padding: 25px 15px;
+  }
+
+  .auth-title {
+    font-size: 24px;
+  }
+
+  .auth-subtitle {
+    font-size: 14px;
+  }
+
+  .form-input {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .auth-btn {
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  .form-options {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .social-btn {
+    padding: 10px;
+    font-size: 13px;
+  }
+}
+
+/* src/admin/LoginRegister.css - Add these styles */
+
+.role-info {
+  background: #e8f5e9;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #c8e6c9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.role-badge {
+  font-size: 14px;
+  font-weight: 700;
+  color: #2e7d32;
+}
+
+.role-hint {
+  font-size: 12px;
+  color: #555;
+  font-style: italic;
+}
+
+/* All other existing styles remain the same */
