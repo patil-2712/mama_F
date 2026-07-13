@@ -326,9 +326,7 @@ const Products = () => {
                   </div>
                   <div className="product-details-full">
                     <h3 className="product-name-full">{capitalizeFirstLetter(product.name)}</h3>
-                    {product.quantity && (
-                      <p className="product-weight-full">{product.quantity} Units</p>
-                    )}
+                    
                     {!product.quantity && product.weight && (
                       <p className="product-weight-full">{product.weight}</p>
                     )}
@@ -355,73 +353,73 @@ const Products = () => {
         </div>
       </section>
 
-      {/* Product Detail Modal */}
+      {/* Product Detail Modal - Same style as OrganicProducts */}
       {showModal && selectedProduct && (
-        <div className="product-modal-overlay" onClick={handleBackdropClick}>
-          <div className="product-modal">
-            <button className="modal-close-btn" onClick={closeProductModal}>✕</button>
+        <div className="products-modal-overlay" onClick={handleBackdropClick}>
+          <div className="products-modal">
+            <button className="products-modal-close-btn" onClick={closeProductModal}>✕</button>
             
-            <div className="modal-content-wrapper">
+            <div className="products-modal-content-wrapper">
               {/* Left: Image */}
-              <div className="modal-image-section">
+              <div className="products-modal-image-section">
                 <img 
                   src={getImageUrl(selectedProduct.image)} 
                   alt={selectedProduct.name} 
-                  className="modal-product-image"
+                  className="products-modal-product-image"
                   onError={(e) => {
                     e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect width="400" height="400" fill="%23f5f5f5"/%3E%3Ctext x="50" y="200" font-family="Arial" font-size="20" fill="%23999"%3ENo Image%3C/text%3E%3C/svg%3E';
                   }}
                 />
                 {selectedProduct.badge && (
-                  <span className="modal-badge">{selectedProduct.badge}</span>
+                  <span className="products-modal-badge">{selectedProduct.badge}</span>
                 )}
               </div>
 
               {/* Right: Details */}
-              <div className="modal-details-section">
-                <div className="modal-product-category">{selectedProduct.category || 'Product'}</div>
-                <h2 className="modal-product-title">{capitalizeFirstLetter(selectedProduct.name)}</h2>
+              <div className="products-modal-details-section">
+                <div className="products-modal-product-category">{selectedProduct.category || 'Product'}</div>
+                <h2 className="products-modal-product-title">{capitalizeFirstLetter(selectedProduct.name)}</h2>
                 
-                <div className="modal-rating">
+                <div className="products-modal-rating">
                   {'⭐'.repeat(Math.round(selectedProduct.rating || 0))}
-                  <span className="modal-rating-count">({selectedProduct.reviews || 0} reviews)</span>
+                  <span className="products-modal-rating-count">({selectedProduct.reviews || 0} reviews)</span>
                 </div>
 
-                <div className="modal-price-section">
-                  <span className="modal-current-price">
+                <div className="products-modal-price-section">
+                  <span className="products-modal-current-price">
                     {formatPrice(getDiscountedPrice(selectedProduct.price, selectedProduct.discount))}
                   </span>
                   {selectedProduct.discount > 0 && (
                     <>
-                      <span className="modal-original-price">
+                      <span className="products-modal-original-price">
                         {formatPrice(selectedProduct.price)}
                       </span>
-                      <span className="modal-discount-percent">
+                      <span className="products-modal-discount-percent">
                         {selectedProduct.discount}% OFF
                       </span>
                     </>
                   )}
                 </div>
 
-                <div className="modal-stock-status">
-                  <span className={`stock-indicator ${selectedProduct.inStock ? 'in-stock' : 'out-of-stock'}`}>
+                <div className="products-modal-stock-status">
+                  <span className={`products-stock-indicator ${selectedProduct.inStock ? 'in-stock' : 'out-of-stock'}`}>
                     {selectedProduct.inStock ? '✅ In Stock' : '❌ Out of Stock'}
                   </span>
                 </div>
 
-                <div className="modal-description">
+                <div className="products-modal-description">
                   <h4>Description</h4>
                   <p>{selectedProduct.description || 'No description available.'}</p>
                 </div>
 
                 {selectedProduct.quantity && (
-                  <div className="modal-quantity-info">
+                  <div className="products-modal-quantity-info">
                     <span>Quantity Available: {selectedProduct.quantity}</span>
                   </div>
                 )}
 
                 <button 
-                  className="modal-add-to-cart-btn"
+                  className="products-modal-add-to-cart-btn"
                   onClick={() => addToCart(selectedProduct)}
                   disabled={!selectedProduct.inStock}
                 >

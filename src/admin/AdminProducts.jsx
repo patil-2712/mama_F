@@ -45,34 +45,19 @@ const AdminProducts = () => {
     }
   }, [navigate]);
 
-  // FIXED: Improved getImageUrl function
   const getImageUrl = (imagePath) => {
     if (!imagePath) return '';
-    
-    console.log('🖼️ Getting image URL for:', imagePath);
-    
-    // If it's already a full URL
-    if (imagePath.startsWith('http')) {
-      return imagePath;
-    }
-    
-    // If it starts with /uploads/ (any variation)
-    if (imagePath.startsWith('/uploads/')) {
-      return `${BASE_URL}${imagePath}`;
-    }
-    
-    // If it's just a filename
+    if (imagePath.startsWith('http')) return imagePath;
+    if (imagePath.startsWith('/uploads/')) return `${BASE_URL}${imagePath}`;
     return `${BASE_URL}/uploads/images/${imagePath}`;
   };
 
   const fetchProducts = async (page = 1) => {
     try {
       setLoading(true);
-      let url = `${API_URL}/products?page=${page}&limit=10`;
+      let url = `${API_URL}/products?page=${page}&limit=12`;
       if (searchTerm) url += `&search=${searchTerm}`;
       if (selectedCategory) url += `&category=${selectedCategory}`;
-
-      console.log("📡 Fetching products from:", url);
 
       const response = await fetch(url, {
         headers: {
@@ -81,7 +66,6 @@ const AdminProducts = () => {
         }
       });
       const data = await response.json();
-      console.log("📦 Products data:", data);
       
       if (data.success) {
         setProducts(data.data);
@@ -104,7 +88,6 @@ const AdminProducts = () => {
 
   const fetchCategories = async () => {
     try {
-      console.log("📡 Fetching categories...");
       const response = await fetch(`${API_URL}/categories`, {
         headers: {
           'Authorization': `Bearer ${getToken()}`,
@@ -112,7 +95,6 @@ const AdminProducts = () => {
         }
       });
       const data = await response.json();
-      console.log("📦 Categories data:", data);
       
       if (data.success) {
         let categoryNames = [];
@@ -194,7 +176,6 @@ const AdminProducts = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      console.log("📎 Image selected:", file.name, file.size, file.type);
       setImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -217,11 +198,9 @@ const AdminProducts = () => {
         inStock: product.inStock,
         quantity: product.quantity?.toString() || ""
       });
-      // FIXED: Set image preview using getImageUrl
       if (product.image) {
         const imageUrl = getImageUrl(product.image);
         setImagePreview(imageUrl);
-        console.log("🖼️ Image preview set:", imageUrl);
       } else {
         setImagePreview("");
       }
@@ -311,11 +290,8 @@ const AdminProducts = () => {
       formDataToSend.append('quantity', formData.quantity || 0);
 
       if (imageFile) {
-        console.log("📸 Appending image file:", imageFile.name);
         formDataToSend.append('image', imageFile);
       }
-
-      console.log("📤 Sending to:", url, method);
 
       const response = await fetch(url, {
         method,
@@ -326,7 +302,6 @@ const AdminProducts = () => {
       });
 
       const data = await response.json();
-      console.log("📥 Response:", data);
 
       if (data.success) {
         setSuccess(editingProduct ? "Product updated successfully!" : "Product created successfully!");
@@ -380,116 +355,170 @@ const AdminProducts = () => {
     fetchProducts(1);
   };
 
+  const totalProducts = products.length;
+  const inStockCount = products.filter(p => p.inStock).length;
+  const outOfStockCount = products.filter(p => !p.inStock).length;
+
   return (
     <div className="admin-products">
-      {/* Search and Filter */}
-      <div className="product-filters">
-        <div className="filter-left">
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
+      {/* Header */}
+      <div className="page-header">
+        <div className="page-header-left">
+          <div className="header-icon-wrapper">
+            <span className="header-icon">📦</span>
+          </div>
+          <div>
+            <h1>Products</h1>
+            <p>Manage your product inventory</p>
+          </div>
+        </div>
+        <div className="page-header-right">
+          <span className="total-badge">{totalProducts} Products</span>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="stats-grid">
+        <div className="stat-box">
+          <div className="stat-box-icon">📦</div>
+          <div className="stat-box-content">
+            <span className="stat-box-label">Total Products</span>
+            <span className="stat-box-value">{totalProducts}</span>
+          </div>
+        </div>
+        <div className="stat-box">
+          <div className="stat-box-icon green">✅</div>
+          <div className="stat-box-content">
+            <span className="stat-box-label">In Stock</span>
+            <span className="stat-box-value green">{inStockCount}</span>
+          </div>
+        </div>
+        <div className="stat-box">
+          <div className="stat-box-icon red">❌</div>
+          <div className="stat-box-content">
+            <span className="stat-box-label">Out of Stock</span>
+            <span className="stat-box-value red">{outOfStockCount}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="filters-section">
+        <div className="filters-left">
+          <div className="search-field">
+            <span className="search-icon">🔍</span>
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+          </div>
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="category-filter"
+            className="filter-select"
           >
             <option value="">All Categories</option>
             {categories.map((cat) => (
               <option key={cat} value={cat}>{cat}</option>
             ))}
           </select>
-          <button className="reset-btn" onClick={resetFilters}>Reset</button>
+          <button className="btn-reset" onClick={resetFilters}>↺ Reset</button>
         </div>
-        <div className="filter-right">
-          <button className="add-product-btn" onClick={() => openModal()}>
-            + Add New Product
+        <div className="filters-right">
+          <button className="btn-add" onClick={() => openModal()}>
+            <span>+</span> Add Product
           </button>
         </div>
       </div>
 
-      {/* Random Categories */}
+      {/* Popular Categories */}
       {randomCategories.length > 0 && (
-        <div className="random-categories">
-          <span className="random-label">Popular Categories:</span>
-          {randomCategories.map((cat) => (
-            <button
-              key={cat}
-              className={`category-chip ${selectedCategory === cat ? 'active' : ''}`}
-              onClick={() => setSelectedCategory(cat)}
-            >
-              {cat}
-            </button>
-          ))}
+        <div className="popular-section">
+          <div className="popular-left">
+            <span className="popular-label">🔥 Popular:</span>
+            {randomCategories.map((cat) => (
+              <button
+                key={cat}
+                className={`popular-chip ${selectedCategory === cat ? 'active' : ''}`}
+                onClick={() => setSelectedCategory(cat)}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+          <div className="popular-right">
+            <span className="popular-count">{products.length} Products</span>
+          </div>
         </div>
       )}
 
       {/* Messages */}
-      {error && <div className="alert alert-error">{error}</div>}
-      {success && <div className="alert alert-success">{success}</div>}
+      {error && <div className="alert error">⚠️ {error}</div>}
+      {success && <div className="alert success">✅ {success}</div>}
 
       {/* Products Grid */}
       {loading ? (
-        <div className="loading-spinner">Loading...</div>
+        <div className="loading-state">⏳ Loading products...</div>
       ) : (
         <>
           <div className="products-grid">
             {products.length === 0 ? (
-              <div className="no-products">
-                <p>No products found</p>
-                <button onClick={() => openModal()}>Add your first product</button>
+              <div className="empty-state">
+                <div className="empty-icon">📦</div>
+                <h3>No Products Found</h3>
+                <p>Start by adding your first product</p>
+                <button className="btn-add-large" onClick={() => openModal()}>
+                  <span>+</span> Add Product
+                </button>
               </div>
             ) : (
-              products.map((product) => (
-                <div key={product._id} className="product-card">
-                  <div className="product-image-container">
-                    <img 
-                      src={getImageUrl(product.image)} 
-                      alt={product.name} 
-                      className="product-card-image"
-                      onError={(e) => {
-                        console.log("🖼️ Image failed to load:", product.image);
-                        // Use a local placeholder instead of external URL
-                        e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="300"%3E%3Crect width="300" height="300" fill="%23cccccc"/%3E%3Ctext x="50" y="150" font-family="Arial" font-size="20" fill="%23666666"%3ENo Image%3C/text%3E%3C/svg%3E';
-                      }}
-                      onLoad={() => {
-                        console.log("✅ Image loaded:", product.image);
-                      }}
-                    />
-                    {product.badge && <span className="product-badge">{product.badge}</span>}
-                    <div className="product-actions-overlay">
-                      <button className="action-btn edit" onClick={() => openModal(product)}>Edit</button>
-                      <button className="action-btn delete" onClick={() => handleDelete(product._id)}>Delete</button>
+              products.map((product) => {
+                const imageUrl = getImageUrl(product.image);
+                return (
+                  <div key={product._id} className="product-card">
+                    <div className="product-image-wrap">
+                      <img 
+                        src={imageUrl || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="300"%3E%3Crect width="300" height="300" fill="%23e8f0fe"/%3E%3Ctext x="50" y="150" font-family="Arial" font-size="20" fill="%236b7280"%3ENo Image%3C/text%3E%3C/svg%3E'} 
+                        alt={product.name} 
+                        className="product-image"
+                        onError={(e) => {
+                          e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="300"%3E%3Crect width="300" height="300" fill="%23e8f0fe"/%3E%3Ctext x="50" y="150" font-family="Arial" font-size="20" fill="%236b7280"%3ENo Image%3C/text%3E%3C/svg%3E';
+                        }}
+                      />
+                      {product.badge && <span className="product-badge">{product.badge}</span>}
+                      <div className="product-overlay">
+                        <button className="overlay-btn edit" onClick={() => openModal(product)}>✏️</button>
+                        <button className="overlay-btn delete" onClick={() => handleDelete(product._id)}>🗑️</button>
+                      </div>
+                    </div>
+                    <div className="product-details">
+                      <h4 className="product-title">{product.name}</h4>
+                      <span className="product-category">{product.category}</span>
+                      <div className="product-pricing">
+                        <span className="product-price">₹{product.price}</span>
+                        {product.discount > 0 && (
+                          <>
+                            <span className="product-original">₹{Math.round(product.price / (1 - product.discount/100))}</span>
+                            <span className="product-discount">-{product.discount}%</span>
+                          </>
+                        )}
+                      </div>
+                      <div className="product-meta">
+                        <span className={`meta-badge ${product.inStock ? 'in-stock' : 'out-of-stock'}`}>
+                          {product.inStock ? 'In Stock' : 'Out of Stock'}
+                        </span>
+                        <span className="meta-qty">Qty: {product.quantity || 0}</span>
+                      </div>
                     </div>
                   </div>
-                  <div className="product-card-info">
-                    <h3 className="product-card-name">{product.name}</h3>
-                    <span className="product-card-category">{product.category}</span>
-                    <div className="product-card-price">
-                      <span className="current-price">₹{product.price}</span>
-                      {product.discount > 0 && (
-                        <>
-                          <span className="original-price">₹{Math.round(product.price / (1 - product.discount/100))}</span>
-                          <span className="discount-badge">{product.discount}% OFF</span>
-                        </>
-                      )}
-                    </div>
-                    <div className="product-card-status">
-                      <span className={`status-badge ${product.inStock ? 'in-stock' : 'out-of-stock'}`}>
-                        {product.inStock ? 'In Stock' : 'Out of Stock'}
-                      </span>
-                      <span className="product-quantity">Qty: {product.quantity || 0}</span>
-                    </div>
-                  </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
 
-          {/* Pagination */}
           {totalPages > 1 && (
             <div className="pagination">
               <button 
@@ -497,7 +526,7 @@ const AdminProducts = () => {
                 onClick={() => fetchProducts(currentPage - 1)}
                 disabled={currentPage === 1}
               >
-                Previous
+                ← Prev
               </button>
               <span className="page-info">Page {currentPage} of {totalPages}</span>
               <button 
@@ -505,7 +534,7 @@ const AdminProducts = () => {
                 onClick={() => fetchProducts(currentPage + 1)}
                 disabled={currentPage === totalPages}
               >
-                Next
+                Next →
               </button>
             </div>
           )}
@@ -515,14 +544,14 @@ const AdminProducts = () => {
       {/* Modal */}
       {showModal && (
         <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
+          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-head">
+              <h2>{editingProduct ? '✏️ Edit Product' : '📦 Add Product'}</h2>
               <button className="modal-close" onClick={closeModal}>✕</button>
             </div>
-            <form onSubmit={handleSubmit} className="product-form">
+            <form onSubmit={handleSubmit} className="modal-form">
               <div className="form-row">
-                <div className="form-group">
+                <div className="form-field">
                   <label>Product Name *</label>
                   <input
                     type="text"
@@ -533,7 +562,7 @@ const AdminProducts = () => {
                     placeholder="Enter product name"
                   />
                 </div>
-                <div className="form-group">
+                <div className="form-field">
                   <label>Price (₹) *</label>
                   <input
                     type="number"
@@ -549,7 +578,7 @@ const AdminProducts = () => {
               </div>
 
               <div className="form-row">
-                <div className="form-group">
+                <div className="form-field">
                   <label>Discount (%)</label>
                   <input
                     type="number"
@@ -561,7 +590,7 @@ const AdminProducts = () => {
                     placeholder="0"
                   />
                 </div>
-                <div className="form-group">
+                <div className="form-field">
                   <label>Quantity</label>
                   <input
                     type="number"
@@ -574,7 +603,7 @@ const AdminProducts = () => {
                 </div>
               </div>
 
-              <div className="form-group">
+              <div className="form-field">
                 <label>Description *</label>
                 <textarea
                   name="description"
@@ -587,7 +616,7 @@ const AdminProducts = () => {
               </div>
 
               <div className="form-row">
-                <div className="form-group">
+                <div className="form-field">
                   <label>Category *</label>
                   <select
                     name="category"
@@ -601,8 +630,8 @@ const AdminProducts = () => {
                     ))}
                   </select>
                 </div>
-                <div className="form-group">
-                  <label>Badge (Optional)</label>
+                <div className="form-field">
+                  <label>Badge</label>
                   <input
                     type="text"
                     name="badge"
@@ -613,37 +642,28 @@ const AdminProducts = () => {
                 </div>
               </div>
 
-              <div className="form-group">
+              <div className="form-field">
                 <label>Product Image {!editingProduct && '*'}</label>
-                <div className="file-upload-wrapper">
+                <div className="upload-area">
                   <input
                     type="file"
                     ref={fileInputRef}
                     accept="image/*"
                     onChange={handleImageChange}
-                    className="file-input"
+                    className="upload-input"
                   />
                   <div className="upload-placeholder">
-                    <span className="upload-icon">📸</span>
+                    <span className="upload-icon">🖼️</span>
                     <p>Click to upload image</p>
                     <small>JPG, PNG, GIF, WebP (Max 5MB)</small>
                   </div>
                 </div>
-                <small className="file-hint">Click the box above to select an image</small>
                 {imagePreview && (
-                  <div className="image-preview-wrapper">
-                    <img 
-                      src={imagePreview} 
-                      alt="Preview" 
-                      className="image-preview"
-                      onError={(e) => {
-                        console.log("Preview image failed to load");
-                        e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="150"%3E%3Crect width="200" height="150" fill="%23cccccc"/%3E%3Ctext x="50" y="80" font-family="Arial" font-size="16" fill="%23666666"%3ENo Image%3C/text%3E%3C/svg%3E';
-                      }}
-                    />
-                    <button 
-                      type="button" 
-                      className="remove-image-btn"
+                  <div className="preview-wrap">
+                    <img src={imagePreview} alt="Preview" className="preview-img" />
+                    <button
+                      type="button"
+                      className="preview-remove"
                       onClick={() => {
                         setImagePreview("");
                         setImageFile(null);
@@ -658,7 +678,7 @@ const AdminProducts = () => {
                 )}
               </div>
 
-              <div className="form-group checkbox-group">
+              <div className="form-field checkbox-field">
                 <label>
                   <input
                     type="checkbox"
@@ -671,8 +691,8 @@ const AdminProducts = () => {
               </div>
 
               <div className="form-actions">
-                <button type="button" className="cancel-btn" onClick={closeModal}>Cancel</button>
-                <button type="submit" className="submit-btn" disabled={loading}>
+                <button type="button" className="btn-cancel" onClick={closeModal}>Cancel</button>
+                <button type="submit" className="btn-submit" disabled={loading}>
                   {loading ? 'Saving...' : editingProduct ? 'Update Product' : 'Create Product'}
                 </button>
               </div>

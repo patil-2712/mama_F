@@ -17,7 +17,6 @@ const AdminUsers = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [userStats, setUserStats] = useState(null);
-  const [authError, setAuthError] = useState(false);
 
   const navigate = useNavigate();
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/admin";
@@ -37,53 +36,35 @@ const AdminUsers = () => {
     status: "active"
   });
 
-  // Get token from localStorage
   const getToken = () => {
     const token = localStorage.getItem("token");
-    console.log("🔑 Token from localStorage:", token ? token.substring(0, 30) + "..." : "No token");
     return token;
   };
 
-  // Get user data from localStorage
   const getUserData = () => {
     try {
       const userData = localStorage.getItem("user");
       if (userData) {
-        const user = JSON.parse(userData);
-        console.log("👤 User data from localStorage:", user);
-        return user;
+        return JSON.parse(userData);
       }
     } catch (e) {
-      console.error("❌ Error parsing user data:", e);
+      console.error("Error parsing user data:", e);
     }
     return null;
   };
 
-  // Check if user is admin
   const checkAdminAccess = () => {
     const token = getToken();
     const user = getUserData();
     
-    if (!token || !user) {
-      console.log("❌ No token or user data");
-      return false;
-    }
-    
-    if (user.role !== "admin") {
-      console.log("❌ User is not admin. Role:", user.role);
-      return false;
-    }
-    
-    console.log("✅ Admin access granted");
+    if (!token || !user) return false;
+    if (user.role !== "admin") return false;
     return true;
   };
 
-  // Fetch users from backend
   const fetchUsers = async (page = 1) => {
     try {
-      // Check admin access
       if (!checkAdminAccess()) {
-        console.log("❌ Admin access check failed, redirecting to login");
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         navigate("/login");
@@ -98,15 +79,11 @@ const AdminUsers = () => {
 
       setLoading(true);
       setError("");
-      setAuthError(false);
       
       let url = `${API_URL}/users?page=${page}&limit=10`;
       if (searchTerm) url += `&search=${encodeURIComponent(searchTerm)}`;
       if (selectedRole) url += `&role=${selectedRole}`;
       if (selectedStatus) url += `&status=${selectedStatus}`;
-
-      console.log("📡 Fetching users from:", url);
-      console.log("🔑 Using token:", token.substring(0, 20) + "...");
 
       const response = await fetch(url, {
         headers: {
@@ -115,20 +92,14 @@ const AdminUsers = () => {
         }
       });
 
-      console.log("📡 Response status:", response.status);
-
-      // If unauthorized, redirect to login
       if (response.status === 401 || response.status === 403) {
-        console.log("🔒 Unauthorized - clearing token and redirecting");
         localStorage.removeItem("token");
         localStorage.removeItem("user");
-        setAuthError(true);
         navigate("/login");
         return;
       }
 
       const data = await response.json();
-      console.log("📦 Response data:", data);
       
       if (data.success) {
         setUsers(data.data || []);
@@ -139,25 +110,20 @@ const AdminUsers = () => {
         setError(data.message || "Failed to fetch users");
       }
     } catch (err) {
-      console.error("❌ Fetch users error:", err);
+      console.error("Fetch users error:", err);
       setError("Failed to fetch users. Please check your connection.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch user statistics
   const fetchUserStats = async () => {
     try {
-      // Check admin access
-      if (!checkAdminAccess()) {
-        return;
-      }
+      if (!checkAdminAccess()) return;
 
       const token = getToken();
       if (!token) return;
 
-      console.log("📊 Fetching user stats...");
       const response = await fetch(`${API_URL}/users/stats`, {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -173,66 +139,48 @@ const AdminUsers = () => {
       }
 
       const data = await response.json();
-      console.log("📊 Stats response:", data);
       
       if (data.success) {
         setUserStats(data.data);
       }
     } catch (err) {
-      console.error("❌ Failed to fetch user stats:", err);
+      console.error("Failed to fetch user stats:", err);
     }
   };
 
-  // Check authentication on mount
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
     
-    console.log("🔐 Component mounted - Token exists:", !!token);
-    console.log("👤 User data exists:", !!userData);
-    
     if (!token || !userData) {
-      console.log("❌ No token or user data, redirecting to login");
       navigate("/login");
       return;
     }
 
-    // Check if user is admin
     try {
       const user = JSON.parse(userData);
-      console.log("👤 User role:", user.role);
       if (user.role !== "admin") {
-        console.log("❌ User is not admin, redirecting to login");
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         navigate("/login");
         return;
       }
     } catch (e) {
-      console.log("❌ Error parsing user data:", e);
       navigate("/login");
       return;
     }
 
-    // Fetch data
-    console.log("✅ Admin authenticated, fetching data...");
     fetchUsers();
     fetchUserStats();
   }, []);
 
-  // Handle search and filter changes with debounce
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (searchTerm !== "" || selectedRole !== "" || selectedStatus !== "") {
-        fetchUsers(1);
-      } else {
-        fetchUsers(1);
-      }
+      fetchUsers(1);
     }, 500);
     return () => clearTimeout(timer);
   }, [searchTerm, selectedRole, selectedStatus]);
 
-  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name.startsWith("address.")) {
@@ -252,7 +200,6 @@ const AdminUsers = () => {
     }
   };
 
-  // Open modal for edit
   const openModal = (user) => {
     setEditingUser(user);
     setFormData({
@@ -274,7 +221,6 @@ const AdminUsers = () => {
     setSuccess("");
   };
 
-  // Close modal
   const closeModal = () => {
     setShowModal(false);
     setEditingUser(null);
@@ -282,7 +228,6 @@ const AdminUsers = () => {
     setSuccess("");
   };
 
-  // Handle update user
   const handleUpdate = async (e) => {
     e.preventDefault();
     setError("");
@@ -295,9 +240,6 @@ const AdminUsers = () => {
         navigate("/login");
         return;
       }
-
-      console.log("📝 Updating user:", editingUser._id);
-      console.log("📝 Update data:", formData);
 
       const response = await fetch(`${API_URL}/users/${editingUser._id}`, {
         method: 'PUT',
@@ -318,7 +260,7 @@ const AdminUsers = () => {
       const data = await response.json();
 
       if (data.success) {
-        setSuccess("✅ User updated successfully!");
+        setSuccess("User updated successfully!");
         fetchUsers(currentPage);
         fetchUserStats();
         setTimeout(() => {
@@ -329,14 +271,13 @@ const AdminUsers = () => {
         setError(data.message || "Something went wrong");
       }
     } catch (err) {
-      console.error("❌ Update error:", err);
+      console.error("Update error:", err);
       setError("Network error. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Delete user
   const handleDelete = async (id, name) => {
     if (!window.confirm(`Are you sure you want to delete user "${name}"?`)) return;
 
@@ -363,7 +304,7 @@ const AdminUsers = () => {
 
       const data = await response.json();
       if (data.success) {
-        setSuccess("✅ User deleted successfully!");
+        setSuccess("User deleted successfully!");
         fetchUsers(currentPage);
         fetchUserStats();
         setTimeout(() => setSuccess(""), 3000);
@@ -371,12 +312,11 @@ const AdminUsers = () => {
         setError(data.message || "Failed to delete user");
       }
     } catch (err) {
-      console.error("❌ Delete error:", err);
+      console.error("Delete error:", err);
       setError("Failed to delete user");
     }
   };
 
-  // Reset filters
   const resetFilters = () => {
     setSearchTerm("");
     setSelectedRole("");
@@ -393,75 +333,91 @@ const AdminUsers = () => {
     }
   };
 
-  // If not authenticated, show nothing
   if (!localStorage.getItem("token")) {
     return null;
   }
 
   return (
     <div className="admin-users">
-      {/* Statistics Cards */}
+      {/* Header */}
+      <div className="page-header">
+        <div className="page-header-left">
+          <span className="header-icon">👥</span>
+          <div>
+            <h1>Users</h1>
+            <p>Manage all registered users</p>
+          </div>
+        </div>
+        <div className="page-header-right">
+          <span className="user-total-badge">📊 Total: {totalUsers} users</span>
+        </div>
+      </div>
+
+      {/* Stats Row */}
       {userStats && (
-        <div className="user-stats">
+        <div className="stats-row">
           <div className="stat-card">
             <div className="stat-icon">👥</div>
-            <div className="stat-info">
-              <h3>Total Users</h3>
-              <p className="stat-number">{userStats.totalUsers || 0}</p>
+            <div className="stat-content">
+              <span className="stat-label">Total Users</span>
+              <span className="stat-number">{userStats.totalUsers || 0}</span>
             </div>
           </div>
           <div className="stat-card">
             <div className="stat-icon">✅</div>
-            <div className="stat-info">
-              <h3>Active</h3>
-              <p className="stat-number">{userStats.activeUsers || 0}</p>
+            <div className="stat-content">
+              <span className="stat-label">Active</span>
+              <span className="stat-number active">{userStats.activeUsers || 0}</span>
             </div>
           </div>
           <div className="stat-card">
             <div className="stat-icon">⏸️</div>
-            <div className="stat-info">
-              <h3>Inactive</h3>
-              <p className="stat-number">{userStats.inactiveUsers || 0}</p>
+            <div className="stat-content">
+              <span className="stat-label">Inactive</span>
+              <span className="stat-number inactive">{userStats.inactiveUsers || 0}</span>
             </div>
           </div>
           <div className="stat-card">
             <div className="stat-icon">🚫</div>
-            <div className="stat-info">
-              <h3>Suspended</h3>
-              <p className="stat-number">{userStats.suspendedUsers || 0}</p>
+            <div className="stat-content">
+              <span className="stat-label">Suspended</span>
+              <span className="stat-number suspended">{userStats.suspendedUsers || 0}</span>
             </div>
           </div>
           <div className="stat-card">
             <div className="stat-icon">🆕</div>
-            <div className="stat-info">
-              <h3>New (30 days)</h3>
-              <p className="stat-number">{userStats.newUsers || 0}</p>
+            <div className="stat-content">
+              <span className="stat-label">New (30 days)</span>
+              <span className="stat-number">{userStats.newUsers || 0}</span>
             </div>
           </div>
           <div className="stat-card">
             <div className="stat-icon">👑</div>
-            <div className="stat-info">
-              <h3>Admins</h3>
-              <p className="stat-number">{userStats.adminUsers || 0}</p>
+            <div className="stat-content">
+              <span className="stat-label">Admins</span>
+              <span className="stat-number admin">{userStats.adminUsers || 0}</span>
             </div>
           </div>
         </div>
       )}
 
-      {/* Search and Filter */}
-      <div className="user-filters">
-        <div className="filter-left">
-          <input
-            type="text"
-            placeholder="Search users by name, email or phone..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
+      {/* Filters Bar */}
+      <div className="filters-bar">
+        <div className="filters-left">
+          <div className="search-box">
+            <span className="search-icon">🔍</span>
+            <input
+              type="text"
+              placeholder="Search by name, email or phone..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+          </div>
           <select
             value={selectedRole}
             onChange={(e) => setSelectedRole(e.target.value)}
-            className="role-filter"
+            className="filter-select"
           >
             <option value="">All Roles</option>
             <option value="user">User</option>
@@ -470,34 +426,31 @@ const AdminUsers = () => {
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="status-filter"
+            className="filter-select"
           >
             <option value="">All Status</option>
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
             <option value="suspended">Suspended</option>
           </select>
-          <button className="reset-btn" onClick={resetFilters}>Reset</button>
-        </div>
-        <div className="filter-right">
-          <span className="user-count">Total: {totalUsers} users</span>
+          <button className="reset-btn" onClick={resetFilters}>↺ Reset</button>
         </div>
       </div>
 
       {/* Messages */}
-      {error && <div className="alert alert-error">{error}</div>}
-      {success && <div className="alert alert-success">{success}</div>}
+      {error && <div className="alert error">❌ {error}</div>}
+      {success && <div className="alert success">✅ {success}</div>}
 
       {/* Users Table */}
       {loading ? (
-        <div className="loading-spinner">Loading users...</div>
+        <div className="loading">⏳ Loading users...</div>
       ) : (
-        <div className="users-table-container">
+        <div className="table-wrapper">
           <table className="users-table">
             <thead>
               <tr>
                 <th>#</th>
-                <th>Name</th>
+                <th>User</th>
                 <th>Email</th>
                 <th>Phone</th>
                 <th>Address</th>
@@ -510,21 +463,29 @@ const AdminUsers = () => {
             <tbody>
               {users.length === 0 ? (
                 <tr>
-                  <td colSpan="9" className="no-data">No users found. Users will appear here when they register from the ecommerce site.</td>
+                  <td colSpan="9" className="empty-row">
+                    <div className="empty-state">
+                      <div className="empty-icon">👤</div>
+                      <h3>No users found</h3>
+                      <p>Users will appear here when they register</p>
+                    </div>
+                  </td>
                 </tr>
               ) : (
                 users.map((user, index) => (
                   <tr key={user._id}>
-                    <td>{(currentPage - 1) * 10 + index + 1}</td>
-                    <td className="user-name-cell">
-                      <div className="user-avatar">
-                        {user.name?.charAt(0)?.toUpperCase() || 'U'}
+                    <td className="user-index">{(currentPage - 1) * 10 + index + 1}</td>
+                    <td>
+                      <div className="user-info">
+                        <div className="user-avatar">
+                          {user.name?.charAt(0)?.toUpperCase() || 'U'}
+                        </div>
+                        <span className="user-name">{user.name || 'Unknown'}</span>
                       </div>
-                      {user.name || 'Unknown'}
                     </td>
-                    <td>{user.email}</td>
-                    <td>{user.phone || '—'}</td>
-                    <td className="address-cell">
+                    <td className="user-email">{user.email}</td>
+                    <td className="user-phone">{user.phone || '—'}</td>
+                    <td className="user-address">
                       {user.address?.street || ''} 
                       {user.address?.city ? `, ${user.address.city}` : ''}
                       {user.address?.state ? `, ${user.address.state}` : ''}
@@ -541,18 +502,20 @@ const AdminUsers = () => {
                         {user.status || 'active'}
                       </span>
                     </td>
-                    <td>{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '—'}</td>
+                    <td className="user-date">
+                      {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '—'}
+                    </td>
                     <td>
                       <div className="action-buttons">
                         <button 
-                          className="action-btn edit"
+                          className="btn-edit"
                           onClick={() => openModal(user)}
                           title="Edit User"
                         >
                           ✏️
                         </button>
                         <button 
-                          className="action-btn delete"
+                          className="btn-delete"
                           onClick={() => handleDelete(user._id, user.name)}
                           title="Delete User"
                         >
@@ -574,15 +537,15 @@ const AdminUsers = () => {
                 onClick={() => fetchUsers(currentPage - 1)}
                 disabled={currentPage === 1}
               >
-                Previous
+                ← Previous
               </button>
-              <span className="page-info">Page {currentPage} of {totalPages}</span>
+              <span className="page-info">📄 Page {currentPage} of {totalPages}</span>
               <button 
                 className="page-btn"
                 onClick={() => fetchUsers(currentPage + 1)}
                 disabled={currentPage === totalPages}
               >
-                Next
+                Next →
               </button>
             </div>
           )}
@@ -592,15 +555,15 @@ const AdminUsers = () => {
       {/* Edit Modal */}
       {showModal && (
         <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>Edit User</h2>
+              <h2>✏️ Edit User</h2>
               <button className="modal-close" onClick={closeModal}>✕</button>
             </div>
-            <form onSubmit={handleUpdate} className="user-form">
+            <form onSubmit={handleUpdate} className="modal-form">
               <div className="form-row">
                 <div className="form-group">
-                  <label>Full Name *</label>
+                  <label>👤 Full Name *</label>
                   <input
                     type="text"
                     name="name"
@@ -611,7 +574,7 @@ const AdminUsers = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Email *</label>
+                  <label>📧 Email *</label>
                   <input
                     type="email"
                     name="email"
@@ -624,7 +587,7 @@ const AdminUsers = () => {
               </div>
 
               <div className="form-group">
-                <label>Phone Number</label>
+                <label>📞 Phone Number</label>
                 <input
                   type="tel"
                   name="phone"
@@ -635,7 +598,7 @@ const AdminUsers = () => {
               </div>
 
               <div className="form-section">
-                <h4 className="form-section-title">Address Details</h4>
+                <h4>📍 Address Details</h4>
                 
                 <div className="form-group">
                   <label>Street</label>
@@ -722,9 +685,9 @@ const AdminUsers = () => {
               </div>
 
               <div className="form-actions">
-                <button type="button" className="cancel-btn" onClick={closeModal}>Cancel</button>
-                <button type="submit" className="submit-btn" disabled={loading}>
-                  {loading ? 'Updating...' : 'Update User'}
+                <button type="button" className="btn-cancel" onClick={closeModal}>Cancel</button>
+                <button type="submit" className="btn-submit" disabled={loading}>
+                  {loading ? '⏳ Updating...' : '✏️ Update User'}
                 </button>
               </div>
             </form>

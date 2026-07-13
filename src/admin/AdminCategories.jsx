@@ -292,9 +292,7 @@ const AdminCategories = () => {
           />
           <button className="reset-btn" onClick={resetFilters}>Reset</button>
         </div>
-        <div className="filter-right">
-          <span className="category-count">{categories.length} categories</span>
-        </div>
+       
       </div>
 
       {/* Messages */}

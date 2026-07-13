@@ -1,4 +1,4 @@
-// src/admin/AdminTestimonials.jsx
+// src/admin/AdminTestimonials.jsx - Updated with modern icons
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AdminTestimonials.css";
@@ -58,8 +58,6 @@ const AdminTestimonials = () => {
       let url = `${API_URL}/admin/testimonials?page=${page}&limit=10`;
       if (searchTerm) url += `&search=${searchTerm}`;
 
-      console.log("🔍 Fetching testimonials from:", url);
-
       const response = await fetch(url, {
         headers: {
           'Authorization': `Bearer ${getToken()}`,
@@ -67,14 +65,11 @@ const AdminTestimonials = () => {
         }
       });
 
-      console.log("📡 Response status:", response.status);
-
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log("📦 Testimonials data:", data);
 
       if (data.success) {
         setTestimonials(data.data || []);
@@ -88,7 +83,7 @@ const AdminTestimonials = () => {
         }
       }
     } catch (err) {
-      console.error("❌ Fetch error:", err);
+      console.error("Fetch error:", err);
       setError("Failed to fetch testimonials: " + err.message);
     } finally {
       setLoading(false);
@@ -115,7 +110,6 @@ const AdminTestimonials = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      console.log("📁 Image selected:", file.name, file.size);
       setImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -136,13 +130,11 @@ const AdminTestimonials = () => {
         isActive: testimonial.isActive,
         order: testimonial.order || 0
       });
-      // Set image preview from existing testimonial
       if (testimonial.image) {
         const imageUrl = testimonial.image.startsWith('http') 
           ? testimonial.image 
           : `${BASE_URL}${testimonial.image}`;
         setImagePreview(imageUrl);
-        console.log("🖼️ Image preview set:", imageUrl);
       } else {
         setImagePreview("");
       }
@@ -221,8 +213,6 @@ const AdminTestimonials = () => {
         formDataToSend.append('image', imageFile);
       }
 
-      console.log("📤 Sending to:", url, method);
-
       const response = await fetch(url, {
         method,
         headers: {
@@ -232,7 +222,6 @@ const AdminTestimonials = () => {
       });
 
       const data = await response.json();
-      console.log("📥 Response:", data);
 
       if (data.success) {
         setSuccess(editingTestimonial ? "Testimonial updated successfully!" : "Testimonial created successfully!");
@@ -249,7 +238,7 @@ const AdminTestimonials = () => {
         }
       }
     } catch (err) {
-      console.error("❌ Submit error:", err);
+      console.error("Submit error:", err);
       setError("Network error. Please try again.");
     } finally {
       setLoading(false);
@@ -317,69 +306,95 @@ const AdminTestimonials = () => {
 
   return (
     <div className="admin-testimonials">
-      <div className="testimonials-header">
-        <h1 className="testimonials-title">Testimonials Management</h1>
-        <button className="add-testimonial-btn" onClick={() => openModal()}>
-          + Add New Testimonial
-        </button>
-      </div>
-
-      <div className="testimonials-filters">
-        <div className="filter-left">
-          <input
-            type="text"
-            placeholder="Search testimonials..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
+      {/* Header */}
+      <div className="page-header">
+        <div className="page-header-left">
+          <span className="header-icon">📝</span>
+          <div>
+            <h1>Testimonials</h1>
+            <p>Manage customer feedback & reviews</p>
+          </div>
+        </div>
+        <div className="page-header-right">
+          <button className="create-btn" onClick={() => openModal()}>
+            <span>➕</span> Add Testimonial
+          </button>
         </div>
       </div>
 
-      {error && <div className="alert alert-error">{error}</div>}
-      {success && <div className="alert alert-success">{success}</div>}
+      {/* Filters */}
+      <div className="filters-bar">
+        <div className="filters-left">
+          <div className="search-box">
+            <span className="search-icon">🔍</span>
+            <input
+              type="text"
+              placeholder="Search testimonials..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+          </div>
+        </div>
+        <div className="filters-right">
+          <span className="item-count">📊 {testimonials.length} Testimonials</span>
+        </div>
+      </div>
 
+      {/* Messages */}
+      {error && <div className="alert error">❌ {error}</div>}
+      {success && <div className="alert success">✅ {success}</div>}
+
+      {/* Testimonials Grid */}
       {loading ? (
-        <div className="loading-spinner">Loading...</div>
+        <div className="loading">⏳ Loading testimonials...</div>
       ) : (
         <>
           <div className="testimonials-grid">
             {testimonials.length === 0 ? (
-              <div className="no-testimonials">
-                <p>No testimonials found</p>
-                <button onClick={() => openModal()}>Add your first testimonial</button>
+              <div className="empty-state">
+                <div className="empty-icon">📝</div>
+                <h3>No Testimonials Yet</h3>
+                <p>Start collecting feedback from your customers</p>
+                <button className="create-btn-large" onClick={() => openModal()}>
+                  <span>➕</span> Add Your First Testimonial
+                </button>
               </div>
             ) : (
               testimonials.map((testimonial) => (
                 <div key={testimonial._id} className="testimonial-card">
-                  <div className="testimonial-card-image">
+                  <div className="testimonial-image-wrapper">
                     <img 
                       src={getImageUrl(testimonial.image)} 
                       alt={testimonial.name}
+                      className="testimonial-image"
                       onError={(e) => {
-                        console.log("🖼️ Image failed to load:", testimonial.image);
                         e.target.src = DEFAULT_AVATAR;
                       }}
                     />
-                    <div className="testimonial-status">
-                      <span className={`status-badge ${testimonial.isActive ? 'active' : 'inactive'}`}>
-                        {testimonial.isActive ? 'Active' : 'Inactive'}
-                      </span>
-                    </div>
+                    <span className={`status-badge ${testimonial.isActive ? 'active' : 'inactive'}`}>
+                      {testimonial.isActive ? '● Active' : '● Inactive'}
+                    </span>
                   </div>
-                  <div className="testimonial-card-content">
-                    <h3 className="testimonial-name">{testimonial.name}</h3>
-                    <div className="testimonial-rating">{renderStars(testimonial.rating || 5)}</div>
-                    <p className="testimonial-text">{testimonial.text}</p>
+                  <div className="testimonial-info">
+                    <div className="testimonial-header">
+                      <h3 className="testimonial-name">{testimonial.name}</h3>
+                      <div className="testimonial-rating">{renderStars(testimonial.rating || 5)}</div>
+                    </div>
                     {testimonial.position && (
-                      <p className="testimonial-position">{testimonial.position}</p>
+                      <span className="testimonial-position">💼 {testimonial.position}</span>
                     )}
-                    <div className="testimonial-card-actions">
-                      <button className="action-btn edit" onClick={() => openModal(testimonial)}>Edit</button>
-                      <button className="action-btn toggle" onClick={() => toggleStatus(testimonial._id)}>
-                        {testimonial.isActive ? 'Deactivate' : 'Activate'}
+                    <p className="testimonial-text">"{testimonial.text}"</p>
+                    <div className="testimonial-actions">
+                      <button className="btn-edit" onClick={() => openModal(testimonial)}>
+                        ✏️ Edit
                       </button>
-                      <button className="action-btn delete" onClick={() => handleDelete(testimonial._id)}>Delete</button>
+                      <button className="btn-toggle" onClick={() => toggleStatus(testimonial._id)}>
+                        {testimonial.isActive ? '⏸️' : '▶️'}
+                      </button>
+                      <button className="btn-delete" onClick={() => handleDelete(testimonial._id)}>
+                        🗑️
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -387,6 +402,7 @@ const AdminTestimonials = () => {
             )}
           </div>
 
+          {/* Pagination */}
           {totalPages > 1 && (
             <div className="pagination">
               <button 
@@ -394,15 +410,15 @@ const AdminTestimonials = () => {
                 onClick={() => fetchTestimonials(currentPage - 1)}
                 disabled={currentPage === 1}
               >
-                Previous
+                ← Previous
               </button>
-              <span className="page-info">Page {currentPage} of {totalPages}</span>
+              <span className="page-info">📄 Page {currentPage} of {totalPages}</span>
               <button 
                 className="page-btn"
                 onClick={() => fetchTestimonials(currentPage + 1)}
                 disabled={currentPage === totalPages}
               >
-                Next
+                Next →
               </button>
             </div>
           )}
@@ -412,93 +428,85 @@ const AdminTestimonials = () => {
       {/* Modal */}
       {showModal && (
         <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>{editingTestimonial ? 'Edit Testimonial' : 'Add New Testimonial'}</h2>
+              <h2>{editingTestimonial ? '✏️ Edit Testimonial' : '📝 Add New Testimonial'}</h2>
               <button className="modal-close" onClick={closeModal}>✕</button>
             </div>
-            <form onSubmit={handleSubmit} className="testimonial-form">
+            <form onSubmit={handleSubmit} className="modal-form">
               <div className="form-group">
-                <label>Name *</label>
+                <label>👤 Full Name *</label>
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  placeholder="Enter full name"
+                  placeholder="Enter customer name"
                 />
               </div>
 
               <div className="form-group">
-                <label>Testimonial Text *</label>
+                <label>💬 Testimonial Text *</label>
                 <textarea
                   name="text"
                   value={formData.text}
                   onChange={handleChange}
                   required
                   rows="4"
-                  placeholder="Enter testimonial text"
+                  placeholder="What did they say about your product?"
                 />
               </div>
 
               <div className="form-row">
                 <div className="form-group">
-                  <label>Position/Title</label>
+                  <label>💼 Position/Title</label>
                   <input
                     type="text"
                     name="position"
                     value={formData.position}
                     onChange={handleChange}
-                    placeholder="e.g., CEO, Customer"
+                    placeholder="e.g., CEO, Founder, Customer"
                   />
                 </div>
                 <div className="form-group">
-                  <label>Rating</label>
+                  <label>⭐ Rating</label>
                   <select
                     name="rating"
                     value={formData.rating}
                     onChange={handleChange}
                   >
-                    <option value="5">⭐⭐⭐⭐⭐ (5)</option>
-                    <option value="4">⭐⭐⭐⭐ (4)</option>
-                    <option value="3">⭐⭐⭐ (3)</option>
-                    <option value="2">⭐⭐ (2)</option>
-                    <option value="1">⭐ (1)</option>
+                    <option value="5">⭐⭐⭐⭐⭐ (5 Stars)</option>
+                    <option value="4">⭐⭐⭐⭐ (4 Stars)</option>
+                    <option value="3">⭐⭐⭐ (3 Stars)</option>
+                    <option value="2">⭐⭐ (2 Stars)</option>
+                    <option value="1">⭐ (1 Star)</option>
                   </select>
                 </div>
               </div>
 
               <div className="form-group">
-                <label>Image {!editingTestimonial && '*'}</label>
-                <div className="file-upload-wrapper">
+                <label>📸 Profile Image {!editingTestimonial && '*'}</label>
+                <div className="upload-box">
                   <input
                     type="file"
                     ref={fileInputRef}
                     accept="image/*"
                     onChange={handleImageChange}
-                    className="file-input"
+                    className="upload-input"
                   />
-                  <div className="upload-placeholder">
-                    <span className="upload-icon">📸</span>
-                    <p>Click to upload image</p>
+                  <div className="upload-content">
+                    <span className="upload-icon">🖼️</span>
+                    <p>Click or drag to upload image</p>
                     <small>JPG, PNG, GIF, WebP (Max 5MB)</small>
                   </div>
                 </div>
-                <small className="file-hint">Click the box above to select an image</small>
                 {imagePreview && (
-                  <div className="image-preview">
-                    <img 
-                      src={imagePreview} 
-                      alt="Preview"
-                      onError={(e) => {
-                        console.log("Preview image failed to load");
-                        e.target.src = DEFAULT_AVATAR;
-                      }}
-                    />
-                    <button 
-                      type="button" 
-                      className="remove-image-btn"
+                  <div className="image-preview-wrapper">
+                    <img src={imagePreview} alt="Preview" className="image-preview" />
+                    <button
+                      type="button"
+                      className="preview-remove"
                       onClick={() => {
                         setImagePreview("");
                         setImageFile(null);
@@ -513,7 +521,7 @@ const AdminTestimonials = () => {
                 )}
               </div>
 
-              <div className="form-group checkbox-group">
+              <div className="form-group checkbox">
                 <label>
                   <input
                     type="checkbox"
@@ -521,14 +529,14 @@ const AdminTestimonials = () => {
                     checked={formData.isActive}
                     onChange={handleChange}
                   />
-                  Active
+                  ✅ Active (Show on website)
                 </label>
               </div>
 
               <div className="form-actions">
-                <button type="button" className="cancel-btn" onClick={closeModal}>Cancel</button>
-                <button type="submit" className="submit-btn" disabled={loading}>
-                  {loading ? 'Saving...' : editingTestimonial ? 'Update' : 'Create'}
+                <button type="button" className="btn-cancel" onClick={closeModal}>Cancel</button>
+                <button type="submit" className="btn-submit" disabled={loading}>
+                  {loading ? '⏳ Saving...' : editingTestimonial ? '✏️ Update' : '📝 Create'}
                 </button>
               </div>
             </form>

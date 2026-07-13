@@ -290,7 +290,7 @@
   line-height: 1.5;
   margin: 8px 0 12px;
   display: -webkit-box;
- 
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -396,7 +396,9 @@
   color: #6b7280;
 }
 
-/* Modal */
+/* ============================================
+   MODAL - FIXED: No scrollbar, proper image display
+   ============================================ */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -417,10 +419,22 @@
   border-radius: 12px;
   max-width: 700px;
   width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
   padding: 32px;
   animation: slideUp 0.3s ease;
+  /* REMOVE SCROLLBAR */
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* HIDE SCROLLBAR but keep functionality */
+.modal-content::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+.modal-content {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
 }
 
 @keyframes slideUp {
@@ -517,16 +531,28 @@
   color: #6b7280;
 }
 
+/* ============================================
+   IMAGE PREVIEW - FIXED: No extra space
+   ============================================ */
 .image-preview {
   position: relative;
   margin-top: 8px;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .image-preview img {
-  max-width: 100%;
-  max-height: 200px;
-  border-radius: 8px;
-  object-fit: cover;
+  width: 100%;
+  height: auto;
+  max-height: 250px;
+  object-fit: contain;
+  display: block;
 }
 
 .remove-image-btn {
@@ -545,6 +571,7 @@
   align-items: center;
   justify-content: center;
   transition: background 0.3s ease;
+  z-index: 5;
 }
 
 .remove-image-btn:hover {
@@ -625,7 +652,9 @@
   color: #6b7280;
 }
 
-/* Responsive */
+/* ============================================
+   RESPONSIVE
+   ============================================ */
 @media (max-width: 768px) {
   .admin-banners {
     padding: 16px;
@@ -658,9 +687,13 @@
     grid-template-columns: 1fr;
   }
 
+  .modal-overlay {
+    padding: 10px;
+  }
+
   .modal-content {
     padding: 20px;
-    margin: 10px;
+    max-height: 95vh;
   }
 
   .banner-card-image {
@@ -678,5 +711,23 @@
 
   .form-actions button {
     width: 100%;
+  }
+
+  .image-preview img {
+    max-height: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+    padding: 16px;
+  }
+  
+  .modal-header h2 {
+    font-size: 20px;
+  }
+
+  .image-preview img {
+    max-height: 150px;
   }
 }

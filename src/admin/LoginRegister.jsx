@@ -1,4 +1,3 @@
-// src/admin/LoginRegister.jsx - Updated version
 
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -9,6 +8,8 @@ const LoginRegister = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -47,7 +48,7 @@ const LoginRegister = () => {
     setError("");
   };
 
-  // API Base URL - Make sure this is correct
+  // API Base URL
   const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
   const API_URL = `${API_BASE_URL}/api/admin/auth`;
 
@@ -61,7 +62,7 @@ const LoginRegister = () => {
       const endpoint = isLogin ? "/login" : "/register";
       const fullUrl = `${API_URL}${endpoint}`;
       
-      console.log("Making request to:", fullUrl); // Debug log
+      console.log("Making request to:", fullUrl);
 
       let payload = isLogin 
         ? {
@@ -89,14 +90,13 @@ const LoginRegister = () => {
         return;
       }
 
-      // For login, validate email and password
       if (isLogin && (!formData.email || !formData.password)) {
         setError("Please enter email and password");
         setLoading(false);
         return;
       }
 
-      console.log("Sending payload:", payload); // Debug log
+      console.log("Sending payload:", payload);
 
       const response = await fetch(fullUrl, {
         method: "POST",
@@ -107,7 +107,7 @@ const LoginRegister = () => {
       });
 
       const data = await response.json();
-      console.log("Response data:", data); // Debug log
+      console.log("Response data:", data);
 
       if (data.success) {
         localStorage.setItem("token", data.token);
@@ -131,6 +131,14 @@ const LoginRegister = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
   };
 
   return (
@@ -272,32 +280,52 @@ const LoginRegister = () => {
 
             <div className="form-group">
               <label className="form-label">Password *</label>
-              <input
-                type="password"
-                name="password"
-                className="form-input"
-                placeholder="Enter your password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                minLength={6}
-              />
+              <div className="password-input-wrapper">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  className="form-input password-input"
+                  placeholder="Enter your password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  minLength={6}
+                />
+                <button 
+                  type="button" 
+                  className="password-toggle-btn"
+                  onClick={togglePasswordVisibility}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? "🙈" : "👁️"}
+                </button>
+              </div>
               <small className="form-hint">Password must be at least 6 characters</small>
             </div>
 
             {!isLogin && (
               <div className="form-group">
                 <label className="form-label">Confirm Password *</label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  className="form-input"
-                  placeholder="Confirm your password"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  required
-                  minLength={6}
-                />
+                <div className="password-input-wrapper">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    name="confirmPassword"
+                    className="form-input password-input"
+                    placeholder="Confirm your password"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    required
+                    minLength={6}
+                  />
+                  <button 
+                    type="button" 
+                    className="password-toggle-btn"
+                    onClick={toggleConfirmPasswordVisibility}
+                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                  >
+                    {showConfirmPassword ? "🙈" : "👁️"}
+                  </button>
+                </div>
               </div>
             )}
 
@@ -330,7 +358,6 @@ const LoginRegister = () => {
                   setIsLogin(!isLogin);
                   setError("");
                   setSuccess("");
-                  // Clear form data when switching
                   setFormData({
                     name: "",
                     email: "",

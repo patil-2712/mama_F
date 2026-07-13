@@ -1,4 +1,4 @@
-// ImageSlider.jsx
+// src/ecommerce/ImageSlider.jsx
 import React, { useState, useEffect } from "react";
 import "./ImageSlider.css";
 
@@ -7,237 +7,171 @@ const ImageSlider = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(true);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-  // Default slides as fallback
   const getDefaultSlides = () => {
     return [
       {
         id: 1,
-        url: "https://images.unsplash.com/photo-1547592180-85f173990554?w=1920&h=600&fit=crop&q=80",
-        fallback: "https://via.placeholder.com/1920x600/1a3a2a/87CEEB?text=Organic+Baby+Food",
-        title: "Organic Baby Food",
-        description: "Pure & Natural Ingredients for Your Baby's Health",
+        title: "Greener, Healthier, Natural",
+        description: "Pure plant-based proteins and clean organic foods.",
         cta: "Explore Now",
-        link: "/shop"
+        link: "/shop",
+        image: "https://images.unsplash.com/photo-1542838132-5f6e9fe5f1e7?w=1200&h=600&fit=crop", // Healthy food image
+        badge: "Organic"
       },
       {
         id: 2,
-        url: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=1920&h=600&fit=crop&q=80",
-        fallback: "https://via.placeholder.com/1920x600/1a3a2a/87CEEB?text=Healthy+Nutrition",
-        title: "Healthy Nutrition",
-        description: "Balanced Meals for Growing Children",
+        title: "Pure Organic Superfoods",
+        description: "100% Certified Clean Ingredients for Your Daily Nutrition.",
         cta: "Shop Now",
-        link: "/shop"
+        link: "/shop",
+        image: "https://images.unsplash.com/photo-1570813875851-28e5b16f0fb0?w=1200&h=600&fit=crop", // Food ingredients
+        badge: "Premium"
       },
       {
         id: 3,
-        url: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=1920&h=600&fit=crop&q=80",
-        fallback: "https://via.placeholder.com/1920x600/1a3a2a/87CEEB?text=Natural+Products",
-        title: "Natural Products",
-        description: "100% Organic & Chemical-Free",
+        title: "Farm Fresh, Naturally Pure",
+        description: "Direct from organic farms to your doorstep.",
         cta: "Discover More",
-        link: "/shop"
+        link: "/shop",
+        image: "https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=1200&h=600&fit=crop", // Fresh produce
+        badge: "Fresh"
       }
     ];
   };
 
-  // Fetch banners from backend
   useEffect(() => {
     const fetchBanners = async () => {
       try {
         setLoading(true);
-        setError("");
+        const response = await fetch(`${API_URL}/api/banners/active?position=hero&limit=5`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         
-        console.log("🔍 Fetching banners from:", `${API_URL}/banners/active?position=hero&limit=5`);
-        
-        const response = await fetch(`${API_URL}/banners/active?position=hero&limit=5`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        });
-
-        console.log("📡 Response status:", response.status);
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
         const data = await response.json();
-        console.log("📦 Banner data:", data);
-
         if (data.success && data.data && data.data.length > 0) {
-          // Transform banner data to match slider format
           const formattedSlides = data.data.map((banner, index) => ({
             id: banner._id || index,
-            url: banner.image && banner.image.startsWith('http') 
-              ? banner.image 
-              : `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${banner.image || ''}`,
-            fallback: "https://via.placeholder.com/1920x600/1a3a2a/87CEEB?text=Organic+Products",
-            title: banner.title || "Organic Products",
+            title: banner.title || "Greener, Healthier, Natural",
             description: banner.description || banner.subtitle || "",
-            cta: banner.buttonText || "Shop Now",
+            cta: banner.buttonText || "Explore Now",
             link: banner.buttonLink || "/shop",
-            position: banner.position || "hero"
+            image: banner.image && banner.image.startsWith('http') 
+              ? banner.image 
+              : `${API_URL}${banner.image || ''}`,
+            badge: banner.badge || "Organic"
           }));
-          
-          console.log("✅ Formatted slides:", formattedSlides);
           setSlides(formattedSlides);
         } else {
-          console.log("📋 No banners from API, using default slides");
           setSlides(getDefaultSlides());
         }
       } catch (err) {
         console.error("❌ Error fetching banners:", err);
-        setError("Failed to load banners. Showing default slides.");
         setSlides(getDefaultSlides());
       } finally {
         setLoading(false);
       }
     };
-
     fetchBanners();
-  }, []);
+  }, [API_URL]);
 
-  // Auto-play functionality
   useEffect(() => {
     let interval;
     if (isAutoPlay && slides.length > 0 && !loading) {
       interval = setInterval(() => {
-        setCurrentIndex((prevIndex) => 
-          prevIndex === slides.length - 1 ? 0 : prevIndex + 1
-        );
-      }, 5000);
+        setCurrentIndex((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+      }, 6000);
     }
     return () => clearInterval(interval);
   }, [isAutoPlay, slides.length, loading]);
 
   const nextSlide = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === slides.length - 1 ? 0 : prevIndex + 1
-    );
+    setCurrentIndex((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? slides.length - 1 : prevIndex - 1
-    );
+    setCurrentIndex((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
   };
 
-  const goToSlide = (index) => {
-    setCurrentIndex(index);
-  };
-
-  const toggleAutoPlay = () => {
-    setIsAutoPlay(!isAutoPlay);
-  };
-
-  // Handle CTA button click
-  const handleCTAClick = (link) => {
-    if (link) {
-      window.location.href = link;
-    }
-  };
-
-  // Show loading state
   if (loading) {
     return (
-      <div className="slider-container-full">
-        <div className="slider-loading">
-          <div className="loading-spinner"></div>
-          <p>Loading banners...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Show error state but still render slides (fallback)
-  if (error && slides.length === 0) {
-    return (
-      <div className="slider-container-full">
-        <div className="slider-error">
-          <p>Unable to load banners. Please try again later.</p>
+      <div className="image-slider-container">
+        <div className="slider-loading-state">
+          <div className="spinner"></div>
+          <p>Loading...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="slider-container-full">
-      <div className="slider-wrapper-full">
+    <div className="image-slider-container">
+      <div className="slider-viewport">
         <div 
-          className="slides-wrapper-full"
+          className="slides-track"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
-          {slides.map((slide, index) => (
-            <div key={slide.id} className="slide-full">
-              <img 
-                src={slide.url} 
-                alt={slide.title} 
-                className="slide-image-full"
-                onError={(e) => {
-                  console.log(`🖼️ Image failed to load, using fallback for ${slide.title}`);
-                  e.target.src = slide.fallback;
-                }}
-              />
-              <div className="slide-overlay-full">
-                <div className="slide-content-full">
-                  <h2 className="slide-title-full">{slide.title}</h2>
-                  {slide.description && (
-                    <p className="slide-description-full">{slide.description}</p>
-                  )}
-                  <button 
-                    className="slide-btn-full"
-                    onClick={() => handleCTAClick(slide.link)}
-                  >
-                    {slide.cta}
-                  </button>
-                </div>
+          {slides.map((slide) => (
+            <div key={slide.id} className="slide-item">
+              {/* Background Image */}
+              <div className="slide-background">
+                <img 
+                  src={slide.image} 
+                  alt={slide.title}
+                  onError={(e) => {
+                    e.target.src = 'https://images.unsplash.com/photo-1542838132-5f6e9fe5f1e7?w=1200&h=600&fit=crop';
+                  }}
+                />
+                <div className="slide-overlay"></div>
+              </div>
+              
+              {/* Content */}
+              <div className="slide-content">
+                {slide.badge && (
+                  <span className="slide-badge">{slide.badge}</span>
+                )}
+                <h1 className="slide-title">{slide.title}</h1>
+                {slide.description && (
+                  <p className="slide-description">{slide.description}</p>
+                )}
+                <button 
+                  className="slide-cta-btn"
+                  onClick={() => { if (slide.link) window.location.href = slide.link; }}
+                >
+                  {slide.cta}
+                </button>
               </div>
             </div>
           ))}
         </div>
-
-        {/* Navigation buttons - only show if more than 1 slide */}
-        {slides.length > 1 && (
-          <>
-            <button className="slider-btn-full prev-btn-full" onClick={prevSlide}>
-              ❮
-            </button>
-            <button className="slider-btn-full next-btn-full" onClick={nextSlide}>
-              ❯
-            </button>
-          </>
-        )}
-
-        {/* Dots - only show if more than 1 slide */}
-        {slides.length > 1 && (
-          <div className="dots-container-full">
-            {slides.map((_, index) => (
-              <button
-                key={index}
-                className={`dot-full ${index === currentIndex ? 'active' : ''}`}
-                onClick={() => goToSlide(index)}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* Auto-play toggle - only show if more than 1 slide */}
-        {slides.length > 1 && (
-          <button 
-            className="autoplay-btn-full" 
-            onClick={toggleAutoPlay}
-            aria-label={isAutoPlay ? 'Pause auto-play' : 'Start auto-play'}
-          >
-            {isAutoPlay ? '⏸' : '▶'}
-          </button>
-        )}
       </div>
+
+      {/* Navigation Arrows */}
+      {slides.length > 1 && (
+        <>
+          <button className="slider-arrow arrow-left" onClick={prevSlide} aria-label="Previous">
+            ‹
+          </button>
+          <button className="slider-arrow arrow-right" onClick={nextSlide} aria-label="Next">
+            ›
+          </button>
+        </>
+      )}
+
+      {/* Dots */}
+      {slides.length > 1 && (
+        <div className="slider-dots">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              className={`dot ${index === currentIndex ? 'active' : ''}`}
+              onClick={() => setCurrentIndex(index)}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

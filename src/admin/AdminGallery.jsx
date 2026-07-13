@@ -9,6 +9,7 @@ const AdminGallery = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [imagePreviews, setImagePreviews] = useState({
     image1: "",
     image2: "",
@@ -74,7 +75,6 @@ const AdminGallery = () => {
       setLoading(true);
       setError("");
       
-      console.log("🔍 Fetching gallery...");
       const response = await fetch(`${API_URL}/admin/gallery`, {
         headers: {
           'Authorization': `Bearer ${getToken()}`,
@@ -83,7 +83,6 @@ const AdminGallery = () => {
       });
 
       const data = await response.json();
-      console.log("📦 Gallery data:", data);
 
       if (data.success) {
         setGalleryData(data.data);
@@ -113,26 +112,22 @@ const AdminGallery = () => {
         }
         if (data.data.video1) {
           setVideoPreviews(prev => ({ ...prev, video1: `${BASE_URL}${data.data.video1}` }));
-          console.log("🎬 Video 1 URL:", `${BASE_URL}${data.data.video1}`);
         }
         if (data.data.video2) {
           setVideoPreviews(prev => ({ ...prev, video2: `${BASE_URL}${data.data.video2}` }));
-          console.log("🎬 Video 2 URL:", `${BASE_URL}${data.data.video2}`);
         }
         if (data.data.video3) {
           setVideoPreviews(prev => ({ ...prev, video3: `${BASE_URL}${data.data.video3}` }));
-          console.log("🎬 Video 3 URL:", `${BASE_URL}${data.data.video3}`);
         }
         setIsEditing(true);
       } else if (data.message === "Gallery not found") {
         setIsEditing(false);
         setGalleryData(null);
-        console.log("📋 No gallery found, ready to create new one");
       } else {
         setError(data.message || "Failed to fetch gallery");
       }
     } catch (err) {
-      console.error("❌ Fetch error:", err);
+      console.error("Fetch error:", err);
       setError("Failed to fetch gallery");
     } finally {
       setLoading(false);
@@ -150,8 +145,6 @@ const AdminGallery = () => {
   const handleFileChange = (e, type, key) => {
     const file = e.target.files[0];
     if (file) {
-      console.log(`📁 ${type} file selected:`, file.name, file.size, file.type);
-      
       if (type === 'image') {
         setImageFiles(prev => ({ ...prev, [key]: file }));
         const reader = new FileReader();
@@ -163,7 +156,6 @@ const AdminGallery = () => {
         setVideoFiles(prev => ({ ...prev, [key]: file }));
         const videoUrl = URL.createObjectURL(file);
         setVideoPreviews(prev => ({ ...prev, [key]: videoUrl }));
-        console.log(`🎬 Video preview URL created:`, videoUrl);
       }
     }
   };
@@ -187,6 +179,54 @@ const AdminGallery = () => {
     }
   };
 
+  const openEditModal = () => {
+    if (galleryData) {
+      // Reset previews with current data
+      if (galleryData.image1) {
+        setImagePreviews(prev => ({ ...prev, image1: `${BASE_URL}${galleryData.image1}` }));
+      }
+      if (galleryData.image2) {
+        setImagePreviews(prev => ({ ...prev, image2: `${BASE_URL}${galleryData.image2}` }));
+      }
+      if (galleryData.image3) {
+        setImagePreviews(prev => ({ ...prev, image3: `${BASE_URL}${galleryData.image3}` }));
+      }
+      if (galleryData.video1) {
+        setVideoPreviews(prev => ({ ...prev, video1: `${BASE_URL}${galleryData.video1}` }));
+      }
+      if (galleryData.video2) {
+        setVideoPreviews(prev => ({ ...prev, video2: `${BASE_URL}${galleryData.video2}` }));
+      }
+      if (galleryData.video3) {
+        setVideoPreviews(prev => ({ ...prev, video3: `${BASE_URL}${galleryData.video3}` }));
+      }
+      setFormData({
+        image1Title: galleryData.image1Title || "",
+        image1Alt: galleryData.image1Alt || "",
+        image2Title: galleryData.image2Title || "",
+        image2Alt: galleryData.image2Alt || "",
+        image3Title: galleryData.image3Title || "",
+        image3Alt: galleryData.image3Alt || "",
+        video1Title: galleryData.video1Title || "",
+        video1Description: galleryData.video1Description || "",
+        video2Title: galleryData.video2Title || "",
+        video2Description: galleryData.video2Description || "",
+        video3Title: galleryData.video3Title || "",
+        video3Description: galleryData.video3Description || "",
+        isActive: galleryData.isActive !== undefined ? galleryData.isActive : true
+      });
+    }
+    setShowEditModal(true);
+    setError("");
+    setSuccess("");
+  };
+
+  const closeEditModal = () => {
+    setShowEditModal(false);
+    setError("");
+    setSuccess("");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -194,8 +234,6 @@ const AdminGallery = () => {
     setLoading(true);
 
     try {
-      console.log("📝 Submitting form...");
-      
       if (!isEditing) {
         if (!imageFiles.image1 || !imageFiles.image2 || !imageFiles.image3) {
           setError("All 3 images are required");
@@ -237,9 +275,6 @@ const AdminGallery = () => {
       if (videoFiles.video2) formDataToSend.append('video2', videoFiles.video2);
       if (videoFiles.video3) formDataToSend.append('video3', videoFiles.video3);
 
-      console.log("📤 Sending request to:", url);
-      console.log("📤 Method:", method);
-
       const response = await fetch(url, {
         method,
         headers: {
@@ -249,11 +284,11 @@ const AdminGallery = () => {
       });
 
       const data = await response.json();
-      console.log("📥 Response:", data);
 
       if (data.success) {
         setSuccess(isEditing ? "Gallery updated successfully!" : "Gallery created successfully!");
         fetchGallery();
+        closeEditModal();
         setTimeout(() => {
           setSuccess("");
         }, 3000);
@@ -265,7 +300,7 @@ const AdminGallery = () => {
         }
       }
     } catch (err) {
-      console.error("❌ Submit error:", err);
+      console.error("Submit error:", err);
       setError("Network error. Please try again.");
     } finally {
       setLoading(false);
@@ -338,262 +373,305 @@ const AdminGallery = () => {
 
   if (loading && !galleryData) {
     return (
-      <div className="admin-gallery-loading">
-        <div className="loader"></div>
-        <p>Loading Gallery...</p>
+      <div className="admin-gallery">
+        <div className="loading">Loading Gallery...</div>
       </div>
     );
   }
 
   return (
     <div className="admin-gallery">
-      <div className="gallery-header">
-        <h1 className="gallery-title">Gallery Management</h1>
-        <div className="gallery-actions">
-          {galleryData && (
+      {/* Header */}
+      <div className="page-header">
+        <div className="page-header-left">
+  <span className="header-icon">🖼️</span>
+  <div>
+    <h1>Gallery</h1>
+    <p>Manage your gallery images and videos</p>
+  </div>
+</div>
+        <div className="page-header-right">
+          {galleryData ? (
             <>
               <button 
-                className={`status-toggle-btn ${galleryData.isActive ? 'active' : 'inactive'}`}
+                className={`status-btn ${galleryData.isActive ? 'active' : 'inactive'}`}
                 onClick={toggleStatus}
               >
-                {galleryData.isActive ? '🟢 Active' : '🔴 Inactive'}
+                {galleryData.isActive ? '✅ Active' : '❌ Inactive'}
+              </button>
+              <button className="edit-btn" onClick={openEditModal}>
+                ✏️ Edit
               </button>
               <button className="delete-btn" onClick={handleDelete}>
                 🗑️ Delete
               </button>
             </>
+          ) : (
+            <button className="create-btn" onClick={openEditModal}>
+              ➕ Create Gallery
+            </button>
           )}
         </div>
       </div>
 
-      {error && <div className="alert alert-error">{error}</div>}
-      {success && <div className="alert alert-success">{success}</div>}
+      {/* Messages */}
+      {error && <div className="alert error">{error}</div>}
+      {success && <div className="alert success">{success}</div>}
 
-      <form onSubmit={handleSubmit} className="gallery-form">
-        {/* Images Section */}
-        <div className="gallery-section">
-          <h2 className="section-title">Images (3 Images Required)</h2>
-          
-          {[1, 2, 3].map(num => {
-            const imageKey = `image${num}`;
-            const titleKey = `image${num}Title`;
-            const altKey = `image${num}Alt`;
-            return (
-              <div key={num} className="file-upload-group">
-                <h3 className="file-label">Image {num} {!isEditing && '*'}</h3>
-                <div className="file-upload-row">
-                  <div className="file-upload-area">
-                    <input
-                      type="file"
-                      ref={fileInputRefs[imageKey]}
-                      accept="image/*"
-                      onChange={(e) => handleFileChange(e, 'image', imageKey)}
-                      className="file-input"
-                    />
-                    {imagePreviews[imageKey] ? (
-                      <div className="file-preview-wrapper">
-                        <img src={imagePreviews[imageKey]} alt={`Preview ${num}`} />
-                        <button
-                          type="button"
-                          className="remove-file-btn"
-                          onClick={() => removeFile('image', imageKey)}
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="upload-placeholder">
-                        <span className="upload-icon">🖼️</span>
-                        <p>Click to upload image</p>
-                        <small>JPG, PNG, GIF, WebP supported</small>
-                      </div>
-                    )}
-                  </div>
-                  <div className="file-meta">
-                    <input
-                      type="text"
-                      name={titleKey}
-                      value={formData[titleKey]}
-                      onChange={handleChange}
-                      placeholder={`Image ${num} Title`}
-                      className="meta-input"
-                    />
-                    <input
-                      type="text"
-                      name={altKey}
-                      value={formData[altKey]}
-                      onChange={handleChange}
-                      placeholder={`Image ${num} Alt Text`}
-                      className="meta-input"
-                    />
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Videos Section */}
-        <div className="gallery-section">
-          <h2 className="section-title">Videos (3 Videos Required - MP4, WebM, OGV)</h2>
-          
-          {[1, 2, 3].map(num => {
-            const videoKey = `video${num}`;
-            const titleKey = `video${num}Title`;
-            const descKey = `video${num}Description`;
-            return (
-              <div key={num} className="file-upload-group">
-                <h3 className="file-label">Video {num} {!isEditing && '*'}</h3>
-                <div className="file-upload-row">
-                  <div className="file-upload-area video-upload">
-                    <input
-                      type="file"
-                      ref={fileInputRefs[videoKey]}
-                      accept="video/*"
-                      onChange={(e) => handleFileChange(e, 'video', videoKey)}
-                      className="file-input"
-                    />
-                    {videoPreviews[videoKey] ? (
-                      <div className="file-preview-wrapper">
-                        <video 
-                          src={videoPreviews[videoKey]} 
-                          controls 
-                          className="video-preview"
-                          onError={(e) => {
-                            console.error(`❌ Video preview error:`, e);
-                          }}
-                        />
-                        <button
-                          type="button"
-                          className="remove-file-btn"
-                          onClick={() => removeFile('video', videoKey)}
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="upload-placeholder">
-                        <span className="upload-icon">🎬</span>
-                        <p>Click to upload video</p>
-                        <small>MP4, WebM, OGV supported</small>
-                      </div>
-                    )}
-                  </div>
-                  <div className="file-meta">
-                    <input
-                      type="text"
-                      name={titleKey}
-                      value={formData[titleKey]}
-                      onChange={handleChange}
-                      placeholder={`Video ${num} Title`}
-                      className="meta-input"
-                    />
-                    <textarea
-                      name={descKey}
-                      value={formData[descKey]}
-                      onChange={handleChange}
-                      placeholder={`Video ${num} Description`}
-                      className="meta-textarea"
-                      rows="2"
-                    />
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Status */}
-        <div className="form-group checkbox-group">
-          <label>
-            <input
-              type="checkbox"
-              name="isActive"
-              checked={formData.isActive}
-              onChange={handleChange}
-            />
-            Active (Show on website)
-          </label>
-        </div>
-
-        {/* Submit */}
-        <div className="form-actions">
-          <button type="submit" className="submit-btn" disabled={loading}>
-            {loading ? 'Saving...' : isEditing ? 'Update Gallery' : 'Create Gallery'}
-          </button>
-        </div>
-      </form>
-
-      {/* Preview Section */}
-      {galleryData && (
-        <div className="gallery-preview">
-          <h2 className="preview-title">Live Preview</h2>
-          
-          <div className="preview-images">
-            <h3>Images</h3>
-            <div className="preview-image-grid">
+      {/* Display Content */}
+      {galleryData ? (
+        <div className="gallery-content">
+          {/* Images Section */}
+          <div className="content-card">
+            <h2 className="content-title">📸 Images</h2>
+            <div className="gallery-grid">
               {[1, 2, 3].map(num => {
                 const imageKey = `image${num}`;
                 const titleKey = `image${num}Title`;
                 const altKey = `image${num}Alt`;
                 return galleryData[imageKey] && (
-                  <div key={num} className="preview-image-item">
+                  <div key={num} className="gallery-item">
                     <img 
                       src={`${BASE_URL}${galleryData[imageKey]}`} 
                       alt={galleryData[altKey] || galleryData[titleKey] || `Image ${num}`}
+                      className="gallery-image"
                       onError={(e) => {
-                        console.error(`❌ Failed to load image ${num}:`, galleryData[imageKey]);
-                        e.target.src = 'https://via.placeholder.com/300x200/cccccc/666666?text=Image+Not+Found';
+                        e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="200"%3E%3Crect width="300" height="200" fill="%23e8f0fe"/%3E%3Ctext x="50" y="100" font-family="Arial" font-size="16" fill="%236b7280"%3ENo Image%3C/text%3E%3C/svg%3E';
                       }}
                     />
-                    {galleryData[titleKey] && <p className="preview-file-title">{galleryData[titleKey]}</p>}
+                    <div className="gallery-item-info">
+                      <p className="gallery-item-title">{galleryData[titleKey] || `Image ${num}`}</p>
+                      {galleryData[altKey] && (
+                        <span className="gallery-item-alt">{galleryData[altKey]}</span>
+                      )}
+                    </div>
                   </div>
                 );
               })}
             </div>
           </div>
 
-          <div className="preview-videos">
-            <h3>Videos</h3>
-            <div className="preview-video-grid">
+          {/* Videos Section */}
+          <div className="content-card">
+            <h2 className="content-title">🎬 Videos</h2>
+            <div className="gallery-grid">
               {[1, 2, 3].map(num => {
                 const videoKey = `video${num}`;
                 const titleKey = `video${num}Title`;
                 const descKey = `video${num}Description`;
                 const videoUrl = galleryData[videoKey] ? `${BASE_URL}${galleryData[videoKey]}` : '';
-                
-                console.log(`🎬 Video ${num} URL:`, videoUrl);
-                
                 return galleryData[videoKey] && (
-                  <div key={num} className="preview-video-item">
+                  <div key={num} className="gallery-item video-item">
                     <div className="video-wrapper">
                       <video 
                         src={videoUrl}
                         controls 
-                        className="preview-video"
-                        style={{ width: '100%', height: '100%' }}
+                        className="gallery-video"
                         onError={(e) => {
-                          console.error(`❌ Failed to load video ${num}:`, videoUrl);
                           e.target.style.display = 'none';
                           const parent = e.target.parentElement;
                           const errorMsg = document.createElement('p');
                           errorMsg.textContent = '⚠️ Video failed to load';
-                          errorMsg.style.color = 'red';
+                          errorMsg.style.color = '#dc2626';
                           errorMsg.style.padding = '20px';
                           errorMsg.style.textAlign = 'center';
                           parent.appendChild(errorMsg);
                         }}
-                        onLoadedData={() => {
-                          console.log(`✅ Video ${num} loaded successfully:`, videoUrl);
-                        }}
                       />
                     </div>
-                    {galleryData[titleKey] && <p className="preview-video-title">{galleryData[titleKey]}</p>}
-                    {galleryData[descKey] && <p className="preview-video-desc">{galleryData[descKey]}</p>}
+                    <div className="gallery-item-info">
+                      <p className="gallery-item-title">{galleryData[titleKey] || `Video ${num}`}</p>
+                      {galleryData[descKey] && (
+                        <span className="gallery-item-desc">{galleryData[descKey]}</span>
+                      )}
+                    </div>
                   </div>
                 );
               })}
             </div>
+          </div>
+
+          {/* Status */}
+          <div className="content-status">
+            <span className="status-label">Status:</span>
+            <span className={`status-badge ${galleryData.isActive ? 'active' : 'inactive'}`}>
+              {galleryData.isActive ? '✅ Active' : '❌ Inactive'}
+            </span>
+          </div>
+        </div>
+      ) : (
+        <div className="empty-state">
+          <div className="empty-icon">🖼️</div>
+          <h3>No Gallery Found</h3>
+          <p>Create your gallery to showcase images and videos</p>
+          <button className="create-btn-large" onClick={openEditModal}>
+            ➕ Create Gallery
+          </button>
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {showEditModal && (
+        <div className="modal-overlay" onClick={closeEditModal}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>{isEditing ? '✏️ Edit Gallery' : '➕ Create Gallery'}</h2>
+              <button className="modal-close" onClick={closeEditModal}>✕</button>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="modal-form">
+              {/* Images Section */}
+              <div className="form-card">
+                <h3 className="form-card-title">📸 Images (3 Required)</h3>
+                
+                {[1, 2, 3].map(num => {
+                  const imageKey = `image${num}`;
+                  const titleKey = `image${num}Title`;
+                  const altKey = `image${num}Alt`;
+                  return (
+                    <div key={num} className="file-group">
+                      <label className="file-label">Image {num} {!isEditing && '*'}</label>
+                      <div className="file-upload-row">
+                        <div className="upload-box">
+                          <input
+                            type="file"
+                            ref={fileInputRefs[imageKey]}
+                            accept="image/*"
+                            onChange={(e) => handleFileChange(e, 'image', imageKey)}
+                            className="upload-input"
+                          />
+                          {imagePreviews[imageKey] ? (
+                            <div className="preview-wrapper">
+                              <img src={imagePreviews[imageKey]} alt={`Preview ${num}`} className="preview-image" />
+                              <button
+                                type="button"
+                                className="preview-remove"
+                                onClick={() => removeFile('image', imageKey)}
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="upload-content">
+                              <span className="upload-icon">🖼️</span>
+                              <p>Click to upload image</p>
+                              <small>JPG, PNG, GIF, WebP</small>
+                            </div>
+                          )}
+                        </div>
+                        <div className="file-meta">
+                          <input
+                            type="text"
+                            name={titleKey}
+                            value={formData[titleKey]}
+                            onChange={handleChange}
+                            placeholder={`Image ${num} Title`}
+                            className="meta-input"
+                          />
+                          <input
+                            type="text"
+                            name={altKey}
+                            value={formData[altKey]}
+                            onChange={handleChange}
+                            placeholder={`Image ${num} Alt Text`}
+                            className="meta-input"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Videos Section */}
+              <div className="form-card">
+                <h3 className="form-card-title">🎬 Videos (3 Required)</h3>
+                
+                {[1, 2, 3].map(num => {
+                  const videoKey = `video${num}`;
+                  const titleKey = `video${num}Title`;
+                  const descKey = `video${num}Description`;
+                  return (
+                    <div key={num} className="file-group">
+                      <label className="file-label">Video {num} {!isEditing && '*'}</label>
+                      <div className="file-upload-row">
+                        <div className="upload-box video-upload">
+                          <input
+                            type="file"
+                            ref={fileInputRefs[videoKey]}
+                            accept="video/*"
+                            onChange={(e) => handleFileChange(e, 'video', videoKey)}
+                            className="upload-input"
+                          />
+                          {videoPreviews[videoKey] ? (
+                            <div className="preview-wrapper">
+                              <video 
+                                src={videoPreviews[videoKey]} 
+                                controls 
+                                className="video-preview"
+                              />
+                              <button
+                                type="button"
+                                className="preview-remove"
+                                onClick={() => removeFile('video', videoKey)}
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="upload-content">
+                              <span className="upload-icon">🎬</span>
+                              <p>Click to upload video</p>
+                              <small>MP4, WebM, OGV</small>
+                            </div>
+                          )}
+                        </div>
+                        <div className="file-meta">
+                          <input
+                            type="text"
+                            name={titleKey}
+                            value={formData[titleKey]}
+                            onChange={handleChange}
+                            placeholder={`Video ${num} Title`}
+                            className="meta-input"
+                          />
+                          <textarea
+                            name={descKey}
+                            value={formData[descKey]}
+                            onChange={handleChange}
+                            placeholder={`Video ${num} Description`}
+                            className="meta-textarea"
+                            rows="2"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Status */}
+              <div className="form-card">
+                <div className="form-group checkbox">
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="isActive"
+                      checked={formData.isActive}
+                      onChange={handleChange}
+                    />
+                    Active (Show on website)
+                  </label>
+                </div>
+              </div>
+
+              <div className="form-actions">
+                <button type="button" className="btn-cancel" onClick={closeEditModal}>Cancel</button>
+                <button type="submit" className="btn-submit" disabled={loading}>
+                  {loading ? 'Saving...' : isEditing ? 'Update' : 'Create'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

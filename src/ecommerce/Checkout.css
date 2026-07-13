@@ -424,3 +424,43 @@
     padding: 10px 15px;
   }
 }
+/* src/ecommerce/Checkout.css - Add these styles */
+
+.login-notice {
+  background: #ebf8ff;
+  border: 1px solid #bee3f8;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.login-notice p {
+  margin: 0;
+  color: #2c5282;
+  font-size: 0.95rem;
+}
+
+.login-notice.logged-in {
+  background: #f0fff4;
+  border-color: #c6f6d5;
+}
+
+.login-notice.logged-in p {
+  color: #276749;
+}
+
+.login-link-btn {
+  background: none;
+  border: none;
+  color: #667eea;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0 0.25rem;
+  font-size: 0.95rem;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.login-link-btn:hover {
+  color: #5a67d8;
+}

@@ -1,4 +1,4 @@
-// src/admin/AdminAbout.jsx
+// src/admin/AdminAbout.jsx - Updated Header
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AdminAbout.css";
@@ -9,6 +9,7 @@ const AdminAbout = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [image1Preview, setImage1Preview] = useState("");
   const [image2Preview, setImage2Preview] = useState("");
   const [image1File, setImage1File] = useState(null);
@@ -119,6 +120,37 @@ const AdminAbout = () => {
     }
   };
 
+  const openEditModal = () => {
+    if (aboutData) {
+      if (aboutData.image1) {
+        setImage1Preview(`${BASE_URL}${aboutData.image1}`);
+      }
+      if (aboutData.image2) {
+        setImage2Preview(`${BASE_URL}${aboutData.image2}`);
+      }
+      setFormData({
+        title1: aboutData.title1 || "",
+        paragraph1: aboutData.paragraph1 || "",
+        image1: aboutData.image1 || "",
+        title2: aboutData.title2 || "",
+        paragraph2: aboutData.paragraph2 || "",
+        image2: aboutData.image2 || "",
+        isActive: aboutData.isActive !== undefined ? aboutData.isActive : true
+      });
+    }
+    setShowEditModal(true);
+    setError("");
+    setSuccess("");
+  };
+
+  const closeEditModal = () => {
+    setShowEditModal(false);
+    setError("");
+    setSuccess("");
+    setImage1File(null);
+    setImage2File(null);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -126,7 +158,6 @@ const AdminAbout = () => {
     setLoading(true);
 
     try {
-      // Validate form data
       if (!formData.title1.trim()) {
         setError("Title 1 is required");
         setLoading(false);
@@ -148,7 +179,6 @@ const AdminAbout = () => {
         return;
       }
 
-      // Check if images are provided for new about page
       if (!isEditing && (!image1File || !image2File)) {
         setError("Both images are required");
         setLoading(false);
@@ -188,6 +218,7 @@ const AdminAbout = () => {
       if (data.success) {
         setSuccess(isEditing ? "About page updated successfully!" : "About page created successfully!");
         fetchAbout();
+        closeEditModal();
         setTimeout(() => {
           setSuccess("");
         }, 3000);
@@ -264,204 +295,275 @@ const AdminAbout = () => {
 
   if (loading && !aboutData) {
     return (
-      <div className="admin-about-loading">
-        <div className="loader"></div>
-        <p>Loading About Page...</p>
+      <div className="admin-about">
+        <div className="loading">Loading About Page...</div>
       </div>
     );
   }
 
   return (
     <div className="admin-about">
-      <div className="about-header">
-        <h1 className="about-title">About Page Management</h1>
-        <div className="about-actions">
-          {aboutData && (
+      {/* Header - Updated */}
+      <div className="page-header">
+        <div className="page-header-left">
+          <span className="header-icon">ℹ️</span>
+          <div>
+            <h1>About Page</h1>
+            <p>Manage your about page content</p>
+          </div>
+        </div>
+        <div className="page-header-right">
+          {aboutData ? (
             <>
               <button 
-                className={`status-toggle-btn ${aboutData.isActive ? 'active' : 'inactive'}`}
+                className={`status-btn ${aboutData.isActive ? 'active' : 'inactive'}`}
                 onClick={toggleStatus}
               >
-                {aboutData.isActive ? '🟢 Active' : '🔴 Inactive'}
+                {aboutData.isActive ? '✅ Active' : '❌ Inactive'}
+              </button>
+              <button className="edit-btn" onClick={openEditModal}>
+                ✏️ Edit
               </button>
               <button className="delete-btn" onClick={handleDelete}>
                 🗑️ Delete
               </button>
             </>
+          ) : (
+            <button className="create-btn" onClick={openEditModal}>
+              ➕ Create About Page
+            </button>
           )}
         </div>
       </div>
 
-      {error && <div className="alert alert-error">{error}</div>}
-      {success && <div className="alert alert-success">{success}</div>}
+      {/* Messages */}
+      {error && <div className="alert error">{error}</div>}
+      {success && <div className="alert success">{success}</div>}
 
-      <form onSubmit={handleSubmit} className="about-form">
-        {/* Section 1 */}
-        <div className="about-section">
-          <h2 className="section-title">Section 1</h2>
-          
-          <div className="form-group">
-            <label>Title 1 *</label>
-            <input
-              type="text"
-              name="title1"
-              value={formData.title1}
-              onChange={handleChange}
-              required
-              placeholder="Enter title for section 1"
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Paragraph 1 *</label>
-            <textarea
-              name="paragraph1"
-              value={formData.paragraph1}
-              onChange={handleChange}
-              required
-              rows="4"
-              placeholder="Enter paragraph for section 1"
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Image 1 {!isEditing && '*'}</label>
-            <input
-              type="file"
-              ref={fileInput1Ref}
-              accept="image/*"
-              onChange={handleImage1Change}
-              className="file-input"
-            />
-            <small className="file-hint">Supported: JPG, PNG, GIF, WebP (Max 5MB)</small>
-            {image1Preview && (
-              <div className="image-preview">
-                <img src={image1Preview} alt="Preview 1" />
-                <button
-                  type="button"
-                  className="remove-image-btn"
-                  onClick={() => {
-                    setImage1Preview("");
-                    setImage1File(null);
-                    if (fileInput1Ref.current) {
-                      fileInput1Ref.current.value = "";
-                    }
-                  }}
-                >
-                  ✕ Remove
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Section 2 */}
-        <div className="about-section">
-          <h2 className="section-title">Section 2</h2>
-          
-          <div className="form-group">
-            <label>Title 2 *</label>
-            <input
-              type="text"
-              name="title2"
-              value={formData.title2}
-              onChange={handleChange}
-              required
-              placeholder="Enter title for section 2"
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Paragraph 2 *</label>
-            <textarea
-              name="paragraph2"
-              value={formData.paragraph2}
-              onChange={handleChange}
-              required
-              rows="4"
-              placeholder="Enter paragraph for section 2"
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Image 2 {!isEditing && '*'}</label>
-            <input
-              type="file"
-              ref={fileInput2Ref}
-              accept="image/*"
-              onChange={handleImage2Change}
-              className="file-input"
-            />
-            <small className="file-hint">Supported: JPG, PNG, GIF, WebP (Max 5MB)</small>
-            {image2Preview && (
-              <div className="image-preview">
-                <img src={image2Preview} alt="Preview 2" />
-                <button
-                  type="button"
-                  className="remove-image-btn"
-                  onClick={() => {
-                    setImage2Preview("");
-                    setImage2File(null);
-                    if (fileInput2Ref.current) {
-                      fileInput2Ref.current.value = "";
-                    }
-                  }}
-                >
-                  ✕ Remove
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Status */}
-        <div className="form-group checkbox-group">
-          <label>
-            <input
-              type="checkbox"
-              name="isActive"
-              checked={formData.isActive}
-              onChange={handleChange}
-            />
-            Active (Show on website)
-          </label>
-        </div>
-
-        {/* Submit */}
-        <div className="form-actions">
-          <button type="submit" className="submit-btn" disabled={loading}>
-            {loading ? 'Saving...' : isEditing ? 'Update About Page' : 'Create About Page'}
-          </button>
-        </div>
-      </form>
-
-      {/* Preview Section */}
-      {aboutData && (
-        <div className="about-preview">
-          <h2 className="preview-title">Live Preview</h2>
-          <div className="preview-content">
-            <div className="preview-section">
-              <h3>{aboutData.title1}</h3>
-              <p>{aboutData.paragraph1}</p>
-              {aboutData.image1 && (
+      {/* Display Content */}
+      {aboutData ? (
+        <div className="about-content">
+          {/* Section 1 */}
+          <div className="content-card">
+            <h2 className="content-title">📝 Section 1</h2>
+            <div className="content-body">
+              <div className="content-image">
                 <img 
                   src={`${BASE_URL}${aboutData.image1}`} 
                   alt={aboutData.title1}
-                  className="preview-image"
+                  onError={(e) => {
+                    e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="200"%3E%3Crect width="300" height="200" fill="%23e8f0fe"/%3E%3Ctext x="50" y="100" font-family="Arial" font-size="16" fill="%236b7280"%3ENo Image%3C/text%3E%3C/svg%3E';
+                  }}
                 />
-              )}
+              </div>
+              <div className="content-text">
+                <h3>{aboutData.title1}</h3>
+                <p>{aboutData.paragraph1}</p>
+              </div>
             </div>
-            <div className="preview-section">
-              <h3>{aboutData.title2}</h3>
-              <p>{aboutData.paragraph2}</p>
-              {aboutData.image2 && (
+          </div>
+
+          {/* Section 2 */}
+          <div className="content-card">
+            <h2 className="content-title">📝 Section 2</h2>
+            <div className="content-body">
+              <div className="content-image">
                 <img 
                   src={`${BASE_URL}${aboutData.image2}`} 
                   alt={aboutData.title2}
-                  className="preview-image"
+                  onError={(e) => {
+                    e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="200"%3E%3Crect width="300" height="200" fill="%23e8f0fe"/%3E%3Ctext x="50" y="100" font-family="Arial" font-size="16" fill="%236b7280"%3ENo Image%3C/text%3E%3C/svg%3E';
+                  }}
                 />
-              )}
+              </div>
+              <div className="content-text">
+                <h3>{aboutData.title2}</h3>
+                <p>{aboutData.paragraph2}</p>
+              </div>
             </div>
+          </div>
+
+          {/* Status */}
+          <div className="content-status">
+            <span className="status-label">Status:</span>
+            <span className={`status-badge ${aboutData.isActive ? 'active' : 'inactive'}`}>
+              {aboutData.isActive ? '✅ Active' : '❌ Inactive'}
+            </span>
+          </div>
+        </div>
+      ) : (
+        <div className="empty-state">
+          <div className="empty-icon">ℹ️</div>
+          <h3>No About Page Found</h3>
+          <p>Create your about page to display on the website</p>
+          <button className="create-btn-large" onClick={openEditModal}>
+            ➕ Create About Page
+          </button>
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {showEditModal && (
+        <div className="modal-overlay" onClick={closeEditModal}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>{isEditing ? '✏️ Edit About Page' : '➕ Create About Page'}</h2>
+              <button className="modal-close" onClick={closeEditModal}>✕</button>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="modal-form">
+              {/* Section 1 */}
+              <div className="form-card">
+                <h3 className="form-card-title">📝 Section 1</h3>
+                
+                <div className="form-group">
+                  <label>Title *</label>
+                  <input
+                    type="text"
+                    name="title1"
+                    value={formData.title1}
+                    onChange={handleChange}
+                    required
+                    placeholder="Enter title for section 1"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Description *</label>
+                  <textarea
+                    name="paragraph1"
+                    value={formData.paragraph1}
+                    onChange={handleChange}
+                    required
+                    rows="4"
+                    placeholder="Enter description for section 1"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Image {!isEditing && '*'}</label>
+                  <div className="upload-box">
+                    <input
+                      type="file"
+                      ref={fileInput1Ref}
+                      accept="image/*"
+                      onChange={handleImage1Change}
+                      className="upload-input"
+                    />
+                    <div className="upload-content">
+                      <span className="upload-icon">📸</span>
+                      <p>Click to upload image</p>
+                      <small>JPG, PNG, GIF, WebP (Max 5MB)</small>
+                    </div>
+                  </div>
+                  {image1Preview && (
+                    <div className="image-preview-wrapper">
+                      <img src={image1Preview} alt="Preview 1" className="image-preview" />
+                      <button
+                        type="button"
+                        className="preview-remove"
+                        onClick={() => {
+                          setImage1Preview("");
+                          setImage1File(null);
+                          if (fileInput1Ref.current) {
+                            fileInput1Ref.current.value = "";
+                          }
+                        }}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Section 2 */}
+              <div className="form-card">
+                <h3 className="form-card-title">📝 Section 2</h3>
+                
+                <div className="form-group">
+                  <label>Title *</label>
+                  <input
+                    type="text"
+                    name="title2"
+                    value={formData.title2}
+                    onChange={handleChange}
+                    required
+                    placeholder="Enter title for section 2"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Description *</label>
+                  <textarea
+                    name="paragraph2"
+                    value={formData.paragraph2}
+                    onChange={handleChange}
+                    required
+                    rows="4"
+                    placeholder="Enter description for section 2"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Image {!isEditing && '*'}</label>
+                  <div className="upload-box">
+                    <input
+                      type="file"
+                      ref={fileInput2Ref}
+                      accept="image/*"
+                      onChange={handleImage2Change}
+                      className="upload-input"
+                    />
+                    <div className="upload-content">
+                      <span className="upload-icon">📸</span>
+                      <p>Click to upload image</p>
+                      <small>JPG, PNG, GIF, WebP (Max 5MB)</small>
+                    </div>
+                  </div>
+                  {image2Preview && (
+                    <div className="image-preview-wrapper">
+                      <img src={image2Preview} alt="Preview 2" className="image-preview" />
+                      <button
+                        type="button"
+                        className="preview-remove"
+                        onClick={() => {
+                          setImage2Preview("");
+                          setImage2File(null);
+                          if (fileInput2Ref.current) {
+                            fileInput2Ref.current.value = "";
+                          }
+                        }}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Status */}
+              <div className="form-card">
+                <div className="form-group checkbox">
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="isActive"
+                      checked={formData.isActive}
+                      onChange={handleChange}
+                    />
+                    Active (Show on website)
+                  </label>
+                </div>
+              </div>
+
+              <div className="form-actions">
+                <button type="button" className="btn-cancel" onClick={closeEditModal}>Cancel</button>
+                <button type="submit" className="btn-submit" disabled={loading}>
+                  {loading ? 'Saving...' : isEditing ? 'Update' : 'Create'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

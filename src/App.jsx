@@ -12,6 +12,8 @@ import Checkout from './ecommerce/Checkout';
 import Products1 from './ecommerce/Products1';
 import AboutUs from './ecommerce/AboutUs';
 import MyOrders from './ecommerce/MyOrders';
+import ForgotPassword from './ecommerce/ForgotPassword';
+import AdminCustomerContacts from './admin/AdminCustomerContacts';
 import About1 from './ecommerce/About1';
 import AdminOrders from './admin/AdminOrders';
 import GalleryVideos from './ecommerce/GalleryVideos';
@@ -57,6 +59,7 @@ function App() {
               <Route path="banners" element={<AdminBanners />} />
               <Route path="gallery" element={<AdminGallery />} />
               <Route path="testimonials" element={<AdminTestimonials />} />
+               <Route path="customer-contacts" element={<AdminCustomerContacts />} />
             </Route>
             
             {/* Home Page */}
@@ -64,7 +67,7 @@ function App() {
               <>
                 <Navbar />
                 <ImageSlider />
-                <ProductSection />
+                {/* <ProductSection /> */}
                 <OrganicProducts />
                 <Products />
                 <AboutUs />
@@ -93,6 +96,13 @@ function App() {
               </>
             } />
             
+            <Route path="/forgot-password" element={
+  <>
+    <Navbar />
+    <ForgotPassword />
+    <Footer />
+  </>
+} />
             {/* About Page */}
             <Route path="/about" element={
               <>
