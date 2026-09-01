@@ -53,7 +53,7 @@ function App() {
              
               <Route path="about" element={<AdminAbout />} />
               <Route path="categories" element={<AdminCategories />} />
-              <Route path="settings" element={<div>Settings Page</div>} />
+            
               <Route path="contact" element={<AdminContact />} />
               <Route path="orders" element={<AdminOrders />} />
               <Route path="banners" element={<AdminBanners />} />

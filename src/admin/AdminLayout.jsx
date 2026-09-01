@@ -358,12 +358,7 @@ const AdminLayout = () => {
               </Link>
             </li>
             
-            <li className={location.pathname === "/admin/settings" ? "active" : ""}>
-              <Link to="/admin/settings">
-                <span className="nav-icon">⚙️</span>
-                {isSidebarOpen && <span className="nav-text">Settings</span>}
-              </Link>
-            </li>
+           
             
             <li onClick={handleLogout} className="logout-item">
               <span className="nav-icon">🚪</span>

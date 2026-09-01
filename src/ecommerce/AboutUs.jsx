@@ -103,7 +103,7 @@ const AboutUs = () => {
           </div>
 
           {/* Section 2 - Fallback (Reversed) */}
-          <div className="about-content-full reverse">
+          {/*<div className="about-content-full reverse">
             <div className="about-image-wrapper-full">
               <img 
                 src="https://images.unsplash.com/photo-1563636619-e9143da7973b?w=600&h=500&fit=crop" 
@@ -121,7 +121,7 @@ const AboutUs = () => {
                 will transform your health and wellbeing.
               </p>
             </div>
-          </div>
+          </div>*/}
         </div>
       </section>
     );
