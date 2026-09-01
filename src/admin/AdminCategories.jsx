@@ -14,7 +14,7 @@ const AdminCategories = () => {
   });
   const [searchTerm, setSearchTerm] = useState("");
 
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/admin";
+  const API_URL = import.meta.env.VITE_API_URL || "http://103.154.233.113:8000/api/admin";
   const getToken = () => localStorage.getItem("token");
 
   // Fetch categories

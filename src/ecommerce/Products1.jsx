@@ -528,7 +528,7 @@ const Products1 = () => {
   const productsPerPage = 12;
 
   // Base URL for API
-  const API_URL = "http://localhost:5000";
+  const API_URL = "http://103.154.233.113:8000";
 
   // Fetch categories
   useEffect(() => {

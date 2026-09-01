@@ -36,7 +36,7 @@ const AdminCustomerContacts = () => {
     unread: 0
   });
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  const API_URL = import.meta.env.VITE_API_URL || 'http://103.154.233.113:8000/api';
   const token = localStorage.getItem('token');
 
   // Fetch contacts with filters

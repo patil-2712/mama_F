@@ -423,7 +423,7 @@ const OrganicProducts = ({ searchTerm = "" }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+  const API_URL = import.meta.env.VITE_API_URL || "http://103.154.233.113:8000";
 
   // Default categories to show
   const TARGET_CATEGORIES = [
