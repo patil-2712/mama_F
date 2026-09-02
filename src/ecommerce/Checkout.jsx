@@ -461,7 +461,7 @@ const Checkout = () => {
   const cartData = location.state || {};
   const { cartItems = [], subtotal = 0, discountAmount = 0, total = 0 } = cartData;
 
-  const API_URL = import.meta.env.VITE_API_URL || "http://103.154.233.113:8000";
+  const API_URL = import.meta.env.VITE_API_URL || "https://api.maisfood.in";
 
   // Load user data from localStorage
   useEffect(() => {

@@ -620,8 +620,8 @@ const Profile = () => {
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
-  const API_URL = import.meta.env.VITE_API_URL || "http://103.154.233.113:8000/api";
-  const BASE_URL = import.meta.env.VITE_API_URL || "http://103.154.233.113:8000";
+  const API_URL = import.meta.env.VITE_API_URL || "https://api.maisfood.in/api";
+  const BASE_URL = import.meta.env.VITE_API_URL || "https://api.maisfood.in";
 
   const [formData, setFormData] = useState({
     name: "",

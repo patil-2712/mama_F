@@ -12,7 +12,7 @@ const AdminContact = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const navigate = useNavigate();
 
-  const API_URL = import.meta.env.VITE_API_URL || "http://103.154.233.113:8000/api";
+  const API_URL = import.meta.env.VITE_API_URL || "https://api.maisfood.in/api";
 
   const [formData, setFormData] = useState({
     address: "",

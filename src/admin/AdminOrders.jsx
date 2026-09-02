@@ -18,8 +18,8 @@ const AdminOrders = () => {
   const [printFormat, setPrintFormat] = useState("a4");
   const printRef = useRef(null);
 
-  const API_URL = import.meta.env.VITE_API_URL || "http://103.154.233.113:8000/api/admin";
-  const BASE_URL = import.meta.env.VITE_API_URL || "http://103.154.233.113:8000";
+  const API_URL = import.meta.env.VITE_API_URL || "https://api.maisfood.in/api/admin";
+  const BASE_URL = import.meta.env.VITE_API_URL || "https://api.maisfood.in";
   const getToken = () => localStorage.getItem("token");
 
   const fetchOrders = async (page = 1) => {

@@ -9,7 +9,7 @@ const ProductSection = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  const API_URL = import.meta.env.VITE_API_URL || "http://103.154.233.113:8000";
+  const API_URL = import.meta.env.VITE_API_URL || "https://api.maisfood.in";
 
   // Fallback products (only used if API fails)
   const fallbackProducts = [

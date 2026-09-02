@@ -19,7 +19,7 @@ const AdminUsers = () => {
   const [userStats, setUserStats] = useState(null);
 
   const navigate = useNavigate();
-  const API_URL = import.meta.env.VITE_API_URL || "http://103.154.233.113:8000/api/admin";
+  const API_URL = import.meta.env.VITE_API_URL || "https://api.maisfood.in/api/admin";
 
   const [formData, setFormData] = useState({
     name: "",
