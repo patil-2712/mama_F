@@ -34,13 +34,15 @@
   letter-spacing: 1px;
   position: relative;
   padding-bottom: 12px;
+  text-align: center;
 }
 
 .footer-title::after {
   content: '';
   position: absolute;
   bottom: 0;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
   width: 40px;
   height: 3px;
   background: #2d7a3a;
@@ -51,6 +53,7 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  text-align: center;
 }
 
 .footer-links li {
@@ -77,6 +80,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  text-align: center;
 }
 
 .footer-address {
@@ -105,6 +109,7 @@
 /* Social Icons */
 .footer-social {
   display: flex;
+  justify-content: center;
   gap: 15px;
   margin-top: 5px;
 }
@@ -171,6 +176,19 @@
 
   .footer-title {
     font-size: 16px;
+    padding-bottom: 10px;
+    text-align: center;
+  }
+
+  .footer-title::after {
+    width: 35px;
+    height: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .footer-links {
+    text-align: center;
   }
 
   .footer-links a,
@@ -178,6 +196,14 @@
   .footer-phone a,
   .footer-email a {
     font-size: 13px;
+  }
+
+  .footer-contact {
+    text-align: center;
+  }
+
+  .footer-social {
+    justify-content: center;
   }
 
   .social-icon {
@@ -197,17 +223,43 @@
   }
 
   .footer-content {
-    grid-template-columns: 1fr;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 20px;
     padding-bottom: 25px;
   }
 
+  /* Make USEFUL LINKS and QUICK LINKS in two columns */
+  .footer-column:nth-child(1),
+  .footer-column:nth-child(2) {
+    grid-column: span 1;
+  }
+
+  /* Make CONTACT and CONNECT full width */
+  .footer-column:nth-child(3),
+  .footer-column:nth-child(4) {
+    grid-column: 1 / -1;
+  }
+
+  .footer-column {
+    align-items: center;
+  }
+
   .footer-title {
     font-size: 15px;
+    padding-bottom: 10px;
+    text-align: center;
   }
 
   .footer-title::after {
     width: 30px;
+    height: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .footer-links {
+    text-align: center;
   }
 
   .footer-links a,
@@ -215,6 +267,14 @@
   .footer-phone a,
   .footer-email a {
     font-size: 12px;
+  }
+
+  .footer-contact {
+    text-align: center;
+  }
+
+  .footer-social {
+    justify-content: center;
   }
 
   .social-icon {

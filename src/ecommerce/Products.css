@@ -122,7 +122,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent !important; /* REMOVED background color */
+  background: transparent !important;
   border: none !important;
   box-shadow: none !important;
   margin-bottom: 15px;
@@ -201,6 +201,7 @@
   font-weight: 600;
   margin: 0;
   width: 100%;
+  text-align: left;
 }
 
 .product-add-btn-full {
@@ -236,250 +237,7 @@
 }
 
 /* ==========================================================================
-   Product Detail Modal Popup
-   ========================================================================== */
-.product-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-  padding: 20px;
-  animation: modalFadeIn 0.25s ease-out;
-}
-
-.product-modal {
-  background-color: #ffffff;
-  border-radius: 16px;
-  width: 100%;
-  max-width: 800px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.modal-close-btn {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background: #f0f0f0;
-  border: none;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  font-size: 1rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  color: #555;
-}
-
-.modal-content-wrapper {
-  display: grid;
-  grid-template-columns: 1fr;
-}
-
-@media (min-width: 768px) {
-  .modal-content-wrapper {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-/* Modal Inner Image Block - REMOVED BACKGROUND */
-.modal-image-section {
-  background: transparent !important; /* REMOVED grey background */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-  position: relative;
-  min-height: 300px;
-}
-
-.modal-product-image {
-  max-width: 90%;
-  max-height: 320px;
-  object-fit: contain;
-}
-
-.modal-badge {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  background-color: #4caf50;
-  color: #ffffff;
-  padding: 4px 12px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  border-radius: 4px;
-}
-
-/* Modal text detail values alignment row */
-.modal-details-section {
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-}
-
-.modal-product-category {
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  color: #888888;
-  letter-spacing: 1px;
-  margin-bottom: 8px;
-}
-
-.modal-product-title {
-  font-size: 1.75rem;
-  color: #222222;
-  margin: 0 0 12px 0;
-}
-
-.modal-rating {
-  font-size: 1rem;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.modal-rating-count {
-  color: #666666;
-  font-size: 0.85rem;
-}
-
-.modal-price-section {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.modal-current-price {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #111111;
-}
-
-.modal-original-price {
-  font-size: 1.1rem;
-  color: #999999;
-  text-decoration: line-through;
-}
-
-.modal-discount-percent {
-  color: #e53935;
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.modal-stock-status {
-  margin-bottom: 12px;
-}
-
-.stock-indicator {
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 4px 8px;
-  border-radius: 4px;
-}
-
-.stock-indicator.in-stock {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-}
-
-.stock-indicator.out-of-stock {
-  background-color: #ffebee;
-  color: #c62828;
-}
-
-.modal-quantity-info {
-  font-size: 0.9rem;
-  color: #666666;
-  margin-bottom: 20px;
-}
-
-/* Scrollable Container Box for descriptive blocks */
-.modal-description {
-  margin-bottom: 20px;
-  border-top: 1px solid #eeeeee;
-  padding-top: 15px;
-  max-height: 120px;
-  overflow-y: auto;
-  padding-right: 5px;
-}
-
-.modal-description h4 {
-  margin: 0 0 8px 0;
-  color: #333333;
-}
-
-.modal-description p {
-  margin: 0;
-  font-size: 0.95rem;
-  color: #555555;
-  line-height: 1.5;
-}
-
-.modal-add-to-cart-btn {
-  background-color: #222222;
-  color: #ffffff;
-  border: none;
-  padding: 14px;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 8px;
-  cursor: pointer;
-  width: 100%;
-  margin-top: auto;
-}
-
-.modal-add-to-cart-btn:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-}
-
-/* ==========================================================================
-   Skeleton Dynamic View Blocks
-   ========================================================================== */
-.product-item-full.skeleton .skeleton-image {
-  background-color: #e0e0e0;
-  border-radius: 8px;
-}
-.product-item-full.skeleton .skeleton-text {
-  width: 100%;
-  height: 14px;
-  background-color: #e0e0e0;
-  margin-bottom: 8px;
-  border-radius: 4px;
-}
-.product-item-full.skeleton .skeleton-text.short { width: 50%; }
-.product-item-full.skeleton .skeleton-text.price { width: 30%; height: 18px; }
-
-/* ==========================================================================
-   Animations
-   ========================================================================== */
-@keyframes modalFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes modalSlideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-/* ==========================================================================
-   PRODUCTS MODAL - Same style as OrganicProducts
+   PRODUCTS MODAL
    ========================================================================== */
 
 .products-modal-overlay {
@@ -576,10 +334,15 @@
   letter-spacing: 0.5px;
 }
 
+/* ==========================================================================
+   MODAL DETAILS SECTION - DESKTOP LEFT ALIGNED
+   ========================================================================== */
 .products-modal-details-section {
   padding: 35px;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
 }
 
 .products-modal-product-category {
@@ -588,6 +351,8 @@
   color: #888888;
   letter-spacing: 1px;
   margin-bottom: 8px;
+  text-align: left;
+  width: 100%;
 }
 
 .products-modal-product-title {
@@ -595,6 +360,8 @@
   color: #222222;
   margin: 0 0 12px 0;
   line-height: 1.2;
+  text-align: left;
+  width: 100%;
 }
 
 .products-modal-rating {
@@ -603,6 +370,8 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  text-align: left;
+  width: 100%;
 }
 
 .products-modal-rating-count {
@@ -610,34 +379,45 @@
   font-size: 0.85rem;
 }
 
+/* ==========================================================================
+   PRICE SECTION - LEFT ALIGNED ON DESKTOP
+   ========================================================================== */
 .products-modal-price-section {
   display: flex;
   align-items: baseline;
   gap: 12px;
   margin-bottom: 16px;
   flex-wrap: wrap;
+  justify-content: flex-start;
+  text-align: left;
+  width: 100%;
 }
 
 .products-modal-current-price {
   font-size: 1.5rem;
   font-weight: 700;
   color: #111111;
+  text-align: left;
 }
 
 .products-modal-original-price {
   font-size: 1.1rem;
   color: #999999;
   text-decoration: line-through;
+  text-align: left;
 }
 
 .products-modal-discount-percent {
   color: #e53935;
   font-weight: 600;
   font-size: 0.9rem;
+  text-align: left;
 }
 
 .products-modal-stock-status {
   margin-bottom: 12px;
+  text-align: left;
+  width: 100%;
 }
 
 .products-stock-indicator {
@@ -645,6 +425,7 @@
   font-weight: 600;
   padding: 4px 8px;
   border-radius: 4px;
+  display: inline-block;
 }
 
 .products-stock-indicator.in-stock {
@@ -661,18 +442,23 @@
   font-size: 0.9rem;
   color: #666666;
   margin-bottom: 20px;
+  text-align: left;
+  width: 100%;
 }
 
 .products-modal-description {
   margin-bottom: 20px;
   border-top: 1px solid #eeeeee;
   padding-top: 15px;
+  text-align: left;
+  width: 100%;
 }
 
 .products-modal-description h4 {
   margin: 0 0 8px 0;
   color: #333333;
   font-size: 0.95rem;
+  text-align: left;
 }
 
 .products-modal-description p {
@@ -680,6 +466,7 @@
   font-size: 0.95rem;
   color: #555555;
   line-height: 1.6;
+  text-align: left;
 }
 
 .products-modal-add-to-cart-btn {
@@ -694,6 +481,7 @@
   width: 100%;
   margin-top: auto;
   transition: background-color 0.2s ease;
+  text-align: center;
 }
 
 .products-modal-add-to-cart-btn:hover:not(:disabled) {
@@ -720,16 +508,70 @@
 }
 
 /* ==========================================================================
-   RESPONSIVE MODAL
+   RESPONSIVE MODAL - CENTER ALIGNED ON MOBILE
    ========================================================================== */
 
 @media (max-width: 768px) {
   .products-modal-details-section {
     padding: 25px;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .products-modal-product-category {
+    text-align: center !important;
   }
 
   .products-modal-product-title {
     font-size: 1.4rem;
+    text-align: center !important;
+  }
+
+  .products-modal-rating {
+    text-align: center !important;
+    justify-content: center !important;
+  }
+
+  .products-modal-price-section {
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  .products-modal-current-price {
+    font-size: 1.3rem;
+    text-align: center !important;
+  }
+
+  .products-modal-original-price {
+    text-align: center !important;
+  }
+
+  .products-modal-discount-percent {
+    text-align: center !important;
+  }
+
+  .products-modal-stock-status {
+    text-align: center !important;
+  }
+
+  .products-stock-indicator {
+    display: inline-block;
+  }
+
+  .products-modal-quantity-info {
+    text-align: center !important;
+  }
+
+  .products-modal-description {
+    text-align: center !important;
+  }
+
+  .products-modal-description h4 {
+    text-align: center !important;
+  }
+
+  .products-modal-description p {
+    text-align: center !important;
   }
 
   .products-modal-image-section {
@@ -739,10 +581,6 @@
 
   .products-modal-product-image {
     max-height: 200px;
-  }
-
-  .products-modal-current-price {
-    font-size: 1.3rem;
   }
 }
 
@@ -754,14 +592,71 @@
 
   .products-modal-details-section {
     padding: 20px;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .products-modal-product-category {
+    text-align: center !important;
+    width: 100% !important;
   }
 
   .products-modal-product-title {
     font-size: 1.2rem;
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .products-modal-rating {
+    text-align: center !important;
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .products-modal-price-section {
+    justify-content: center !important;
+    text-align: center !important;
+    width: 100% !important;
   }
 
   .products-modal-current-price {
     font-size: 1.2rem;
+    text-align: center !important;
+  }
+
+  .products-modal-original-price {
+    text-align: center !important;
+  }
+
+  .products-modal-discount-percent {
+    text-align: center !important;
+  }
+
+  .products-modal-stock-status {
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .products-stock-indicator {
+    display: inline-block;
+  }
+
+  .products-modal-quantity-info {
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .products-modal-description {
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .products-modal-description h4 {
+    text-align: center !important;
+  }
+
+  .products-modal-description p {
+    text-align: center !important;
   }
 
   .products-modal-add-to-cart-btn {
@@ -785,4 +680,58 @@
     height: 28px;
     font-size: 0.9rem;
   }
+}
+
+/* Extra small phones */
+@media (max-width: 360px) {
+  .products-modal-details-section {
+    padding: 15px !important;
+  }
+
+  .products-modal-product-title {
+    font-size: 1rem !important;
+  }
+
+  .products-modal-current-price {
+    font-size: 1rem !important;
+  }
+
+  .products-modal-add-to-cart-btn {
+    padding: 10px !important;
+    font-size: 0.8rem !important;
+  }
+
+  .products-modal-price-section {
+    gap: 8px !important;
+  }
+}
+
+/* ==========================================================================
+   Skeleton Dynamic View Blocks
+   ========================================================================== */
+.product-item-full.skeleton .skeleton-image {
+  background-color: #e0e0e0;
+  border-radius: 8px;
+}
+.product-item-full.skeleton .skeleton-text {
+  width: 100%;
+  height: 14px;
+  background-color: #e0e0e0;
+  margin-bottom: 8px;
+  border-radius: 4px;
+}
+.product-item-full.skeleton .skeleton-text.short { width: 50%; }
+.product-item-full.skeleton .skeleton-text.price { width: 30%; height: 18px; }
+
+/* ==========================================================================
+   Animations
+   ========================================================================== */
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalSlideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }

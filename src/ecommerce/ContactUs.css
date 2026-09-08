@@ -89,11 +89,17 @@
   margin-top: 2px;
 }
 
+.meta-typography-text-box {
+  flex: 1;
+  min-width: 0;
+}
+
 .meta-typography-text-box h4 {
   font-size: 15px;
   font-weight: 600;
   color: #444444;
   margin: 0 0 4px 0;
+  text-align: left;
 }
 
 .meta-typography-text-box p {
@@ -101,6 +107,7 @@
   color: #666666;
   line-height: 1.5;
   margin: 0;
+  text-align: left;
 }
 
 .meta-typography-text-box p a {
@@ -206,22 +213,6 @@
 
 @keyframes spinTrack { to { transform: rotate(360deg); } }
 
-/* Responsive Adaptability */
-@media (max-width: 900px) {
-  .contact-top-layout-grid {
-    grid-template-columns: 1fr;
-    gap: 35px;
-  }
-  .contact-bottom-form-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-  .feedback-form-textarea-field {
-    height: 130px;
-  }
-}
-/* Add these styles to your existing ContactUs.css */
-
 /* Form Status Messages */
 .form-status-message {
   padding: 12px 16px;
@@ -274,23 +265,236 @@
   font-size: 13px;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 900px) {
+  .contact-top-layout-grid {
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
+  
   .contact-bottom-form-grid {
     grid-template-columns: 1fr;
     gap: 16px;
   }
   
-  .form-textarea-column {
-    margin-top: 0;
+  .feedback-form-textarea-field {
+    height: 130px;
+  }
+}
+
+@media (max-width: 768px) {
+  .clean-contact-section {
+    padding: 30px 0 50px 0;
+  }
+  
+  .contact-main-serif-title {
+    font-size: 26px;
+    margin-bottom: 30px;
+  }
+  
+  .contact-top-layout-grid {
+    gap: 30px;
+    margin-bottom: 40px;
+  }
+  
+  .contact-map-frame-holder {
+    height: 250px;
+  }
+  
+  .map-direction-floating-badge {
+    font-size: 10px;
+    padding: 6px 12px;
+    top: 12px;
+    left: 12px;
+  }
+  
+  .contact-meta-details-column {
+    gap: 20px;
+  }
+  
+  .meta-info-row-item {
+    gap: 15px;
+    align-items: flex-start;
+  }
+  
+  .meta-icon-circle-badge {
+    min-width: 38px;
+    max-width: 38px;
+    height: 38px;
+    margin-top: 1px;
+  }
+  
+  .meta-icon-circle-badge svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .meta-typography-text-box {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .meta-typography-text-box h4 {
+    font-size: 14px;
+    margin-bottom: 3px;
+    text-align: left;
+  }
+  
+  .meta-typography-text-box p {
+    font-size: 13px;
+    word-break: break-word;
+    text-align: left;
+  }
+  
+  .contact-bottom-form-grid {
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  
+  .form-inputs-stacked-column {
+    gap: 12px;
+  }
+  
+  .feedback-form-input-field {
+    height: 40px;
+    font-size: 13px;
+    padding: 0 14px;
   }
   
   .feedback-form-textarea-field {
-    height: 120px;
+    height: 110px;
+    font-size: 13px;
+    padding: 12px 14px;
+  }
+  
+  .feedback-form-input-field::placeholder,
+  .feedback-form-textarea-field::placeholder {
+    font-size: 12px;
   }
   
   .form-status-message {
     font-size: 13px;
     padding: 10px 14px;
+    margin-bottom: 16px;
+  }
+  
+  .feedback-form-submit-pill-btn {
+    font-size: 12px;
+    padding: 10px 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .clean-contact-section {
+    padding: 25px 0 40px 0;
+  }
+  
+  .clean-contact-container {
+    padding: 0 15px;
+  }
+  
+  .contact-main-serif-title {
+    font-size: 22px;
+    margin-bottom: 25px;
+  }
+  
+  .contact-top-layout-grid {
+    gap: 25px;
+    margin-bottom: 35px;
+  }
+  
+  .contact-map-frame-holder {
+    height: 200px;
+  }
+  
+  .map-direction-floating-badge {
+    font-size: 9px;
+    padding: 5px 10px;
+    gap: 5px;
+    top: 10px;
+    left: 10px;
+  }
+  
+  .direction-arrow-icon {
+    font-size: 10px;
+  }
+  
+  .contact-meta-details-column {
+    gap: 16px;
+  }
+  
+  .meta-info-row-item {
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .meta-icon-circle-badge {
+    min-width: 32px;
+    max-width: 32px;
+    height: 32px;
+    margin-top: 1px;
+  }
+  
+  .meta-icon-circle-badge svg {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .meta-typography-text-box {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .meta-typography-text-box h4 {
+    font-size: 13px;
+    margin-bottom: 2px;
+    text-align: left;
+  }
+  
+  .meta-typography-text-box p {
+    font-size: 12px;
+    line-height: 1.4;
+    text-align: left;
+    word-break: break-word;
+  }
+  
+  .contact-bottom-form-grid {
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .form-inputs-stacked-column {
+    gap: 10px;
+  }
+  
+  .feedback-form-input-field {
+    height: 38px;
+    font-size: 12px;
+    padding: 0 12px;
+  }
+  
+  .feedback-form-textarea-field {
+    height: 100px;
+    font-size: 12px;
+    padding: 10px 12px;
+  }
+  
+  .feedback-form-input-field::placeholder,
+  .feedback-form-textarea-field::placeholder {
+    font-size: 11px;
+  }
+  
+  .form-status-message {
+    font-size: 12px;
+    padding: 8px 12px;
+    margin-bottom: 14px;
+  }
+  
+  .feedback-form-submit-pill-btn {
+    font-size: 11px;
+    padding: 8px 28px;
   }
 }

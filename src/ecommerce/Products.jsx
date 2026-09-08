@@ -380,10 +380,7 @@ const Products = () => {
                 <div className="products-modal-product-category">{selectedProduct.category || 'Product'}</div>
                 <h2 className="products-modal-product-title">{capitalizeFirstLetter(selectedProduct.name)}</h2>
                 
-                <div className="products-modal-rating">
-                  {'⭐'.repeat(Math.round(selectedProduct.rating || 0))}
-                  <span className="products-modal-rating-count">({selectedProduct.reviews || 0} reviews)</span>
-                </div>
+             
 
                 <div className="products-modal-price-section">
                   <span className="products-modal-current-price">
@@ -412,11 +409,11 @@ const Products = () => {
                   <p>{selectedProduct.description || 'No description available.'}</p>
                 </div>
 
-                {selectedProduct.quantity && (
+                {/*{selectedProduct.quantity && (
                   <div className="products-modal-quantity-info">
                     <span>Quantity Available: {selectedProduct.quantity}</span>
                   </div>
-                )}
+                )}*/}
 
                 <button 
                   className="products-modal-add-to-cart-btn"

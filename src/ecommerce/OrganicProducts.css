@@ -320,11 +320,15 @@
   z-index: 2;
 }
 
-/* Modal Details Section */
+/* ==========================================================================
+   MODAL DETAILS SECTION - LEFT ALIGNED ON DESKTOP
+   ========================================================================== */
 .organic-modal-details-section {
   padding: 35px;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
 }
 
 .organic-modal-product-category {
@@ -333,6 +337,8 @@
   color: #888888;
   letter-spacing: 1px;
   margin-bottom: 8px;
+  text-align: left;
+  width: 100%;
 }
 
 .organic-modal-product-title {
@@ -340,6 +346,8 @@
   color: #222222;
   margin: 0 0 12px 0;
   line-height: 1.2;
+  text-align: left;
+  width: 100%;
 }
 
 .organic-modal-rating {
@@ -348,6 +356,8 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  text-align: left;
+  width: 100%;
 }
 
 .organic-modal-rating-count {
@@ -361,28 +371,36 @@
   gap: 12px;
   margin-bottom: 16px;
   flex-wrap: wrap;
+  justify-content: flex-start;
+  text-align: left;
+  width: 100%;
 }
 
 .organic-modal-current-price {
   font-size: 1.5rem;
   font-weight: 700;
   color: #111111;
+  text-align: left;
 }
 
 .organic-modal-original-price {
   font-size: 1.1rem;
   color: #999999;
   text-decoration: line-through;
+  text-align: left;
 }
 
 .organic-modal-discount-percent {
   color: #e53935;
   font-weight: 600;
   font-size: 0.9rem;
+  text-align: left;
 }
 
 .organic-modal-stock-status {
   margin-bottom: 12px;
+  text-align: left;
+  width: 100%;
 }
 
 .organic-stock-indicator {
@@ -390,6 +408,7 @@
   font-weight: 600;
   padding: 4px 8px;
   border-radius: 4px;
+  display: inline-block;
 }
 
 .organic-stock-indicator.in-stock {
@@ -406,18 +425,23 @@
   font-size: 0.9rem;
   color: #666666;
   margin-bottom: 20px;
+  text-align: left;
+  width: 100%;
 }
 
 .organic-modal-description {
   margin-bottom: 20px;
   border-top: 1px solid #eeeeee;
   padding-top: 15px;
+  text-align: left;
+  width: 100%;
 }
 
 .organic-modal-description h4 {
   margin: 0 0 8px 0;
   color: #333333;
   font-size: 0.95rem;
+  text-align: left;
 }
 
 .organic-modal-description p {
@@ -425,6 +449,7 @@
   font-size: 0.95rem;
   color: #555555;
   line-height: 1.6;
+  text-align: left;
 }
 
 .organic-modal-add-to-cart-btn {
@@ -439,6 +464,7 @@
   width: 100%;
   margin-top: auto;
   transition: background-color 0.2s ease;
+  text-align: center;
 }
 
 .organic-modal-add-to-cart-btn:hover:not(:disabled) {
@@ -448,6 +474,247 @@
 .organic-modal-add-to-cart-btn:disabled {
   background-color: #cccccc;
   cursor: not-allowed;
+}
+
+/* ==========================================================================
+   RESPONSIVE MODAL - CENTER ALIGNED ON MOBILE
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .organic-products-section {
+    padding: 15px 15px 40px 15px;
+  }
+
+  .organic-section-title {
+    font-size: 1.75rem;
+  }
+
+  .organic-product-image-wrapper {
+    height: 200px;
+    padding: 10px;
+  }
+
+  .organic-product-name {
+    font-size: 1rem;
+  }
+
+  .organic-product-price {
+    font-size: 0.95rem;
+  }
+
+  .organic-original-price {
+    font-size: 0.75rem;
+  }
+
+  /* Modal Mobile Styles - Center Aligned */
+  .organic-modal-details-section {
+    padding: 25px;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .organic-modal-product-category {
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .organic-modal-product-title {
+    font-size: 1.4rem;
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .organic-modal-rating {
+    text-align: center !important;
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .organic-modal-price-section {
+    justify-content: center !important;
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .organic-modal-current-price {
+    font-size: 1.3rem;
+    text-align: center !important;
+  }
+
+  .organic-modal-original-price {
+    text-align: center !important;
+  }
+
+  .organic-modal-discount-percent {
+    text-align: center !important;
+  }
+
+  .organic-modal-stock-status {
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .organic-stock-indicator {
+    display: inline-block;
+  }
+
+  .organic-modal-quantity-info {
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .organic-modal-description {
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .organic-modal-description h4 {
+    text-align: center !important;
+  }
+
+  .organic-modal-description p {
+    text-align: center !important;
+  }
+
+  .organic-modal-image-section {
+    min-height: 200px;
+    padding: 20px;
+  }
+
+  .organic-modal-product-image {
+    max-height: 200px;
+  }
+
+  .organic-modal-discount-badge {
+    font-size: 0.7rem;
+    padding: 4px 10px;
+    top: 15px;
+    right: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .organic-products-grid {
+    gap: 20px;
+  }
+
+  .organic-product-image-wrapper {
+    height: 170px;
+    padding: 8px;
+  }
+
+  .organic-product-badge,
+  .organic-product-discount {
+    font-size: 0.6rem;
+    padding: 3px 8px;
+  }
+
+  .organic-product-price {
+    font-size: 0.85rem;
+    gap: 4px;
+  }
+
+  .organic-original-price {
+    font-size: 0.7rem;
+  }
+
+  /* Modal Mobile Center Alignment */
+  .organic-modal {
+    border-radius: 12px;
+    margin: 10px;
+  }
+
+  .organic-modal-details-section {
+    padding: 20px;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .organic-modal-product-category {
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .organic-modal-product-title {
+    font-size: 1.2rem;
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .organic-modal-rating {
+    text-align: center !important;
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .organic-modal-price-section {
+    justify-content: center !important;
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .organic-modal-current-price {
+    font-size: 1.2rem;
+    text-align: center !important;
+  }
+
+  .organic-modal-original-price {
+    font-size: 0.95rem;
+    text-align: center !important;
+  }
+
+  .organic-modal-discount-percent {
+    font-size: 0.8rem;
+    text-align: center !important;
+  }
+
+  .organic-modal-stock-status {
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .organic-stock-indicator {
+    display: inline-block;
+  }
+
+  .organic-modal-quantity-info {
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .organic-modal-description {
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .organic-modal-description h4 {
+    text-align: center !important;
+  }
+
+  .organic-modal-description p {
+    text-align: center !important;
+  }
+
+  .organic-modal-add-to-cart-btn {
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+
+  .organic-modal-discount-badge {
+    font-size: 0.65rem;
+    padding: 3px 8px;
+    top: 12px;
+    right: 12px;
+  }
+
+  .organic-modal-image-section {
+    min-height: 150px;
+    padding: 15px;
+  }
+
+  .organic-modal-product-image {
+    max-height: 150px;
+  }
 }
 
 /* ==========================================================================
@@ -490,136 +757,6 @@
 @keyframes organicSlideUp {
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
-}
-
-/* ==========================================================================
-   Responsive Adjustments
-   ========================================================================== */
-@media (max-width: 768px) {
-  .organic-products-section {
-    padding: 15px 15px 40px 15px;
-  }
-
-  .organic-section-title {
-    font-size: 1.75rem;
-  }
-
-  .organic-product-image-wrapper {
-    height: 200px;
-    padding: 10px;
-  }
-
-  .organic-product-name {
-    font-size: 1rem;
-  }
-
-  .organic-product-price {
-    font-size: 0.95rem;
-  }
-
-  .organic-original-price {
-    font-size: 0.75rem;
-  }
-
-  .organic-modal-details-section {
-    padding: 25px;
-  }
-
-  .organic-modal-product-title {
-    font-size: 1.4rem;
-  }
-
-  .organic-modal-image-section {
-    min-height: 200px;
-    padding: 20px;
-  }
-
-  .organic-modal-product-image {
-    max-height: 200px;
-  }
-
-  .organic-modal-current-price {
-    font-size: 1.3rem;
-  }
-
-  .organic-modal-discount-badge {
-    font-size: 0.7rem;
-    padding: 4px 10px;
-    top: 15px;
-    right: 15px;
-  }
-}
-
-@media (max-width: 480px) {
-  .organic-products-grid {
-    gap: 20px;
-  }
-
-  .organic-product-image-wrapper {
-    height: 170px;
-    padding: 8px;
-  }
-
-  .organic-product-badge,
-  .organic-product-discount {
-    font-size: 0.6rem;
-    padding: 3px 8px;
-  }
-
-  .organic-product-price {
-    font-size: 0.85rem;
-    gap: 4px;
-  }
-
-  .organic-original-price {
-    font-size: 0.7rem;
-  }
-
-  .organic-modal {
-    border-radius: 12px;
-    margin: 10px;
-  }
-
-  .organic-modal-details-section {
-    padding: 20px;
-  }
-
-  .organic-modal-product-title {
-    font-size: 1.2rem;
-  }
-
-  .organic-modal-current-price {
-    font-size: 1.2rem;
-  }
-
-  .organic-modal-original-price {
-    font-size: 0.95rem;
-  }
-
-  .organic-modal-discount-percent {
-    font-size: 0.8rem;
-  }
-
-  .organic-modal-add-to-cart-btn {
-    padding: 12px;
-    font-size: 0.9rem;
-  }
-
-  .organic-modal-discount-badge {
-    font-size: 0.65rem;
-    padding: 3px 8px;
-    top: 12px;
-    right: 12px;
-  }
-
-  .organic-modal-image-section {
-    min-height: 150px;
-    padding: 15px;
-  }
-
-  .organic-modal-product-image {
-    max-height: 150px;
-  }
 }
 
 /* ==========================================================================
