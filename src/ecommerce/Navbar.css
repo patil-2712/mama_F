@@ -607,6 +607,11 @@
    ============================================ */
 
 @media (max-width: 920px) {
+  /* Hide brand name on mobile */
+  .brand-name {
+    display: none;
+  }
+
   .mobile-menu-toggle {
     display: flex;
   }
@@ -753,8 +758,9 @@
     height: 30px;
   }
 
+  /* Brand name already hidden from 920px */
   .brand-name {
-    font-size: 8px;
+    display: none;
   }
 
   /* Increased search size in mobile view */
