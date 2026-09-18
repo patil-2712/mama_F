@@ -12,10 +12,10 @@ const Footer = () => {
             <h3 className="footer-title">USEFUL LINKS</h3>
             <ul className="footer-links">
               <li><a href="#">PRIVACY POLICY</a></li>
-              <li><a href="#">CATEGORIES &gt;</a></li>
+              <li><a href="#">CATEGORIES </a></li>
               <li><a href="#">ABOUT US</a></li>
               <li><a href="#">VIDEOS</a></li>
-              <li><a href="#">&gt; MORE</a></li>
+              <li><a href="#"> MORE</a></li>
             </ul>
           </div>
 
@@ -35,16 +35,13 @@ const Footer = () => {
             <h3 className="footer-title">CONTACT</h3>
             <div className="footer-contact">
               <p className="footer-address">
-                Palm Court Bldg M, 50th St, Floor, New<br />
-                Link Road, Beside Gorgeon Sports<br />
-                Complex, Malad West, Mumbai, 400054,<br />
-                Maharashtra
+               A/P Gat No 50, Bhagali Wada, Aitawade Khurd, Tal- Walwa Dist - Sangli, Maharashtra, 415409
               </p>
               <p className="footer-phone">
-                <a href="tel:+918888888888">+91-8888888888</a>
+                <a href="tel:+918888888888">+91-7350439611</a>
               </p>
               <p className="footer-email">
-                <a href="mailto:websupport@justdial.com">websupport@justdial.com</a>
+                <a href="mailto:websupport@justdial.com">patilavdhut199@gmail.com</a>
               </p>
             </div>
           </div>

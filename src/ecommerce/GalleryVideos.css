@@ -1,4 +1,4 @@
-/* GalleryVideos.css */
+
 .gallery-section {
   width: 100%;
   padding: 60px 20px;
@@ -6,9 +6,15 @@
 }
 
 .gallery-container {
+  width: 100%;
   max-width: 1400px;
   margin: 0 auto;
 }
+
+
+/* =========================================================
+   GALLERY HEADER
+   ========================================================= */
 
 .gallery-header {
   text-align: center;
@@ -19,14 +25,14 @@
   font-size: 42px;
   font-weight: 800;
   color: #000000;
-  margin-bottom: 15px;
+  margin: 0 0 15px;
   position: relative;
   display: inline-block;
   font-style: normal;
 }
 
 .gallery-title::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -10px;
   left: 50%;
@@ -37,34 +43,85 @@
   border-radius: 2px;
 }
 
-/* Gallery Grid - Strict 16:9 widescreen presentation for video entries */
+
+/* =========================================================
+   GALLERY GRID
+   ========================================================= */
+
 .gallery-grid {
+  width: 100%;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
   gap: 25px;
-  margin-bottom: 0;
+
+  margin: 0;
+  padding: 0;
 }
+
+
+/* =========================================================
+   GALLERY ITEM
+   ========================================================= */
 
 .gallery-item {
   position: relative;
-  border-radius: 15px;
+
+  width: 100%;
+
+  /*
+    Every image and video card is 16:9.
+  */
+  aspect-ratio: 16 / 9;
+
   overflow: hidden;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
-  aspect-ratio: 16/9; /* Set layout ratio horizontally widescreen */
+
+  border-radius: 15px;
+
+  background: #000000;
+
   cursor: pointer;
-  background: #000;
+
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .gallery-item:hover {
   transform: scale(1.02);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.20);
 }
+
+
+/* =========================================================
+   IMAGE
+   ========================================================= */
+
+/*
+  IMPORTANT:
+  cover = fills the complete card.
+  No white space at the bottom.
+*/
 
 .gallery-image {
   width: 100%;
   height: 100%;
+
+  display: block;
+
   object-fit: cover;
+
+  object-position: center center;
+
+  margin: 0;
+  padding: 0;
+
+  background: #000000;
+
   transition: transform 0.5s ease;
 }
 
@@ -72,179 +129,659 @@
   transform: scale(1.05);
 }
 
-/* Video Wrapper & Native Controls Integration */
-.video-thumbnail-wrapper {
-  position: relative;
+
+/* Image item specifically */
+
+.gallery-item.image-item {
+  background: #000000;
+}
+
+.gallery-item.image-item .gallery-image {
   width: 100%;
   height: 100%;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+
+  display: block;
+
+  object-fit: cover;
+
+  object-position: center center;
+
+  margin: 0;
+  padding: 0;
 }
+
+
+/* =========================================================
+   VIDEO WRAPPER
+   ========================================================= */
+
+.video-thumbnail-wrapper {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  display: block;
+
+  background: #000000;
+
+  margin: 0;
+  padding: 0;
+}
+
+
+/* =========================================================
+   DIRECT VIDEO
+   ========================================================= */
 
 .gallery-inline-video {
   width: 100%;
   height: 100%;
+
+  display: block;
+
+  /*
+    IMPORTANT:
+    cover fills the entire video card.
+  */
   object-fit: cover;
-  background: #000;
+
+  object-position: center center;
+
+  background: #000000;
+
+  margin: 0;
+  padding: 0;
 }
+
+
+/* =========================================================
+   YOUTUBE VIDEO THUMBNAIL
+   ========================================================= */
+
 .video-thumbnail-placeholder {
+  position: relative;
+
   width: 100%;
   height: 100%;
+
+  overflow: hidden;
+
+  background: #000000;
+
+  margin: 0;
+  padding: 0;
 }
 
 .video-thumbnail-bg {
+  position: relative;
+
   width: 100%;
   height: 100%;
-  background-position: center;
+
+  background-position: center center;
+
+  /*
+    Make YouTube thumbnail fill the complete card.
+  */
   background-size: cover;
+
   background-repeat: no-repeat;
-  position: relative;
+
+  background-color: #000000;
+
+  transition: transform 0.5s ease;
 }
 
-/* Video Play Button */
+.gallery-item:hover .video-thumbnail-bg {
+  transform: scale(1.05);
+}
+
+
+/* =========================================================
+   VIDEO PLAY BUTTON
+   ========================================================= */
+
 .video-play-btn {
   position: absolute;
+
   top: 50%;
   left: 50%;
+
   transform: translate(-50%, -50%);
+
   width: 60px;
   height: 60px;
+
   background: rgba(0, 0, 0, 0.75);
+
   border-radius: 50%;
+
   display: flex;
+
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+
   border: 2px solid rgba(255, 255, 255, 0.4);
-  z-index: 2;
+
+  z-index: 5;
+
+  transition:
+    background 0.3s ease,
+    transform 0.3s ease,
+    border-color 0.3s ease;
 }
 
 .video-play-btn span {
   color: #ffffff;
+
   font-size: 24px;
+
+  line-height: 1;
+
   margin-left: 4px;
 }
 
 .video-thumbnail-wrapper:hover .video-play-btn {
   background: #2d7a3a;
+
   transform: translate(-50%, -50%) scale(1.1);
+
   border-color: #2d7a3a;
 }
 
-/* Gallery Overlay */
+
+/* =========================================================
+   GALLERY OVERLAY
+   ========================================================= */
+
 .gallery-overlay {
   position: absolute;
+
   bottom: 0;
   left: 0;
   right: 0;
+
   padding: 30px 20px 20px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.85),
+    rgba(0, 0, 0, 0.40),
+    transparent
+  );
+
   display: flex;
+
   align-items: flex-end;
+
   transition: all 0.3s ease;
-  z-index: 1;
-  pointer-events: none; /* Allows clicks to pass through to underlying elements */
+
+  z-index: 6;
+
+  /*
+    Allows click to reach image/video.
+  */
+  pointer-events: none;
 }
 
 .gallery-label {
   color: #ffffff;
+
   font-size: 18px;
+
   font-weight: 700;
+
   letter-spacing: 1.5px;
+
   text-transform: uppercase;
+
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+
+  margin: 0;
 }
 
-/* Modal styling */
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.gallery-loading {
+  width: 100%;
+
+  min-height: 250px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  text-align: center;
+}
+
+.gallery-loading p {
+  margin: 0;
+
+  color: #555555;
+
+  font-size: 16px;
+}
+
+.loading-spinner {
+  width: 45px;
+  height: 45px;
+
+  border: 4px solid #e5e5e5;
+
+  border-top-color: #2d7a3a;
+
+  border-radius: 50%;
+
+  animation: gallery-spinner 0.8s linear infinite;
+
+  margin-bottom: 15px;
+}
+
+@keyframes gallery-spinner {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   EMPTY GALLERY
+   ========================================================= */
+
+.gallery-empty {
+  grid-column: 1 / -1;
+
+  width: 100%;
+
+  min-height: 200px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  text-align: center;
+}
+
+.gallery-empty p {
+  margin: 0;
+
+  color: #666666;
+
+  font-size: 18px;
+}
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
 .gallery-modal {
   position: fixed;
+
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+
+  width: 100%;
+  height: 100%;
+
   background: rgba(0, 0, 0, 0.9);
+
   display: flex;
+
   align-items: center;
+
   justify-content: center;
+
   z-index: 9999;
+
   padding: 20px;
 }
 
+
+/* =========================================================
+   MODAL CONTENT
+   ========================================================= */
+
 .gallery-modal-content {
   position: relative;
+
   width: 100%;
+
   max-width: 1000px;
-  aspect-ratio: 16/9;
-  background: #000;
+
+  aspect-ratio: 16 / 9;
+
+  background: #000000;
+
   border-radius: 8px;
+
   overflow: hidden;
 }
 
+
+/* =========================================================
+   MODAL CLOSE
+   ========================================================= */
+
 .gallery-modal-close {
   position: absolute;
+
   top: 15px;
   right: 15px;
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
-  border: none;
-  font-size: 20px;
+
   width: 40px;
   height: 40px;
+
+  background: rgba(0, 0, 0, 0.6);
+
+  color: #ffffff;
+
+  border: none;
+
+  font-size: 20px;
+
   border-radius: 50%;
+
   cursor: pointer;
-  z-index: 10;
+
+  z-index: 20;
+
   display: flex;
+
   align-items: center;
+
   justify-content: center;
-  transition: background 0.2s;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
 }
 
 .gallery-modal-close:hover {
   background: #2d7a3a;
+
+  transform: scale(1.05);
 }
 
-.gallery-modal-image,
-.gallery-modal-video-wrapper,
+
+/* =========================================================
+   MODAL IMAGE
+   ========================================================= */
+
+.gallery-modal-image {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  /*
+    Modal keeps complete image visible.
+  */
+  object-fit: contain;
+
+  object-position: center center;
+
+  background: #000000;
+
+  margin: 0;
+  padding: 0;
+}
+
+
+/* =========================================================
+   MODAL VIDEO WRAPPER
+   ========================================================= */
+
+.gallery-modal-video-wrapper {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: #000000;
+}
+
+
+/* =========================================================
+   MODAL VIDEO
+   ========================================================= */
+
 .gallery-modal-video {
   width: 100%;
   height: 100%;
+
+  display: block;
+
   object-fit: contain;
+
+  object-position: center center;
+
+  background: #000000;
+
+  margin: 0;
+  padding: 0;
 }
 
 iframe.gallery-modal-video {
   border: 0;
 }
 
-/* Responsive Grid Adaptation */
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
 @media (max-width: 992px) {
+
+  .gallery-section {
+    padding: 50px 20px;
+  }
+
+  .gallery-header {
+    margin-bottom: 40px;
+  }
+
+  .gallery-title {
+    font-size: 38px;
+  }
+
   .gallery-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
     gap: 20px;
   }
+
+  .gallery-item {
+    aspect-ratio: 16 / 9;
+  }
+
 }
 
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
 @media (max-width: 600px) {
-  .gallery-grid {
-    grid-template-columns: 1fr;
-    gap: 15px;
+
+  .gallery-section {
+    padding: 40px 15px;
   }
+
+  .gallery-header {
+    margin-bottom: 35px;
+  }
+
   .gallery-title {
     font-size: 32px;
   }
-}
-/* Forces a clean, horizontal widescreen aspect ratio for videos */
-.gallery-grid .video-item {
-  aspect-ratio: 16/9 !important; 
-  background-color: #000000; /* Dark background behind letterboxed videos */
+
+  .gallery-title::after {
+    width: 65px;
+
+    height: 3px;
+
+    bottom: -8px;
+  }
+
+  .gallery-grid {
+    grid-template-columns: 1fr;
+
+    gap: 15px;
+  }
+
+  .gallery-item {
+    width: 100%;
+
+    aspect-ratio: 16 / 9;
+
+    border-radius: 12px;
+  }
+
+  .gallery-overlay {
+    padding: 25px 15px 15px;
+  }
+
+  .gallery-label {
+    font-size: 15px;
+
+    letter-spacing: 1px;
+  }
+
+  .video-play-btn {
+    width: 52px;
+    height: 52px;
+  }
+
+  .video-play-btn span {
+    font-size: 21px;
+  }
+
+  .gallery-modal {
+    padding: 10px;
+  }
+
+  .gallery-modal-content {
+    width: 100%;
+
+    max-width: 100%;
+
+    aspect-ratio: 16 / 9;
+
+    border-radius: 6px;
+  }
+
+  .gallery-modal-close {
+    top: 10px;
+    right: 10px;
+
+    width: 36px;
+    height: 36px;
+
+    font-size: 18px;
+  }
+
 }
 
-/* Ensure the wrapper and inner video file fill the horizontal space properly */
-.video-thumbnail-wrapper,
-.gallery-inline-video,
-.video-thumbnail-placeholder {
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 400px) {
+
+  .gallery-section {
+    padding: 30px 10px;
+  }
+
+  .gallery-title {
+    font-size: 28px;
+  }
+
+  .gallery-grid {
+    gap: 12px;
+  }
+
+  .gallery-item {
+    border-radius: 10px;
+  }
+
+  .gallery-label {
+    font-size: 13px;
+  }
+
+}
+
+
+/* =========================================================
+   FINAL OVERRIDE
+   ========================================================= */
+
+/*
+  DO NOT use object-fit: contain here.
+
+  contain = empty space can appear.
+  cover   = fills the complete gallery card.
+*/
+
+.gallery-item .gallery-image {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* Keeps the video from stretching or distorting */
+
+  display: block;
+
+  object-fit: cover;
+
+  object-position: center center;
+}
+
+.gallery-item .gallery-inline-video {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  object-position: center center;
+}
+
+.gallery-item .video-thumbnail-placeholder {
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+}
+
+.gallery-item .video-thumbnail-bg {
+  width: 100%;
+  height: 100%;
+
+  background-size: cover;
+
+  background-position: center center;
+
+  background-repeat: no-repeat;
 }

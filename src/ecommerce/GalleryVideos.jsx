@@ -336,8 +336,8 @@ const GalleryVideos = () => {
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [mediaType, setMediaType] = useState('image');
 
-  const API_URL = import.meta.env.VITE_API_URL || "https://api.maisfood.in/api";
-  const BASE_URL = import.meta.env.VITE_API_URL || "https://api.maisfood.in";
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   useEffect(() => {
     const fetchGallery = async () => {
