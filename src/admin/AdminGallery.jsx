@@ -40,8 +40,8 @@ const AdminGallery = () => {
   };
   const navigate = useNavigate();
 
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+  const API_URL = import.meta.env.VITE_API_URL || "https://api.maisfood.in/api";
+  const BASE_URL = import.meta.env.VITE_API_URL || "https://api.maisfood.in";
 
   const [formData, setFormData] = useState({
     image1Title: "",
