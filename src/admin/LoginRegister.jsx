@@ -374,7 +374,7 @@ const LoginRegister = () => {
                   });
                 }}
               >
-                {isLogin ? " Register" : " Login"}
+                {isLogin ? " " : " Login"}
               </span>
             </p>
           </div>
